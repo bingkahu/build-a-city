@@ -2,39 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baghdad: The Jewel of the World</title>
+    <title>Baghdad: The Centre of the World</title>
     <style>
-        :root { --gold: #d4af37; --stone: #c2b280; }
+        :root { --gold: #d4af37; --bg: #0f0e0d; }
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Cinzel', serif; }
+        
         #boot-screen {
-            position: fixed; inset: 0; background: #0a0908; z-index: 1000;
+            position: fixed; inset: 0; background: var(--bg); z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: var(--gold); text-align: center;
+            color: var(--gold); text-align: center; transition: opacity 1s;
         }
+        
         button {
             background: none; border: 2px solid var(--gold); color: var(--gold);
             padding: 20px 60px; font-size: 1.5rem; cursor: pointer; font-family: 'Cinzel';
-            transition: 0.3s; margin-top: 30px;
+            transition: 0.3s; margin-top: 30px; letter-spacing: 5px; visibility: hidden;
         }
-        button:hover { background: var(--gold); color: #000; }
+        
         #hud {
-            position: absolute; bottom: 40px; left: 40px; width: 350px;
-            color: #fff; background: rgba(0,0,0,0.8); padding: 25px;
-            border-left: 4px solid var(--gold); pointer-events: none; opacity: 0; transition: 0.5s;
+            position: absolute; bottom: 50px; left: 50px; width: 380px;
+            color: #f4e4bc; background: rgba(10, 10, 10, 0.9); padding: 30px;
+            border-top: 3px solid var(--gold); pointer-events: none; 
+            opacity: 0; transition: opacity 0.8s; z-index: 100;
         }
+
+        .status { font-size: 0.8rem; color: #555; margin-top: 10px; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="boot-screen">
-        <h1 style="letter-spacing:15px; font-size:3rem;">THE ROUND CITY</h1>
-        <p style="color:#888;">762 AD • RECONSTRUCTION</p>
-        <button onclick="launch()">INITIALIZE SIMULATION</button>
+        <h1 style="letter-spacing:20px; font-size:3.5rem; margin:0;">BAGHDAD</h1>
+        <p style="color:#8c7d6b; letter-spacing:8px;">THE ROUND CITY • 762 AD</p>
+        <div id="loading-msg" class="status">Constructing Geometry...</div>
+        <button id="launch-btn" onclick="launch()">INITIALISE</button>
     </div>
+
     <div id="hud">
         <h2 id="b-name" style="margin:0; color:var(--gold);"></h2>
-        <p id="b-lore" style="font-style:italic; font-size:0.9rem;"></p>
+        <p id="b-sector" style="font-size: 0.7rem; color: #888; margin: 5px 0 15px 0;"></p>
+        <p id="b-lore" style="font-style:italic; font-size:0.95rem; line-height:1.6;"></p>
     </div>
+
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", 
           "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
