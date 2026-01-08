@@ -2,105 +2,110 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 let scene, camera, renderer, controls, clock;
-let cityMesh, domeMesh, peopleMesh, buildingData = [];
+let cityMesh, detailMesh, peopleMesh;
+let buildingData = [];
+let peopleData = [];
+
+// --- AUDIO ENGINE ---
+function initMusic() {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0.2, audioCtx.currentTime + 4);
+    masterGain.connect(audioCtx.destination);
+
+    // Deep Drone (D-tone)
+    [73.42, 110.00, 146.83].forEach(freq => {
+        const osc = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        const filter = audioCtx.createBiquadFilter();
+        filter.type = "lowpass";
+        filter.frequency.value = 200;
+
+        g.gain.value = 0.05;
+        osc.connect(filter);
+        filter.connect(g);
+        g.connect(masterGain);
+        osc.start();
+    });
+}
 
 window.launch = () => {
-    document.getElementById('boot-screen').style.opacity = 0;
-    setTimeout(() => document.getElementById('boot-screen').remove(), 1000);
-    init();
-    startAudio();
+    initMusic();
+    document.getElementById('boot-screen').style.opacity = '0';
+    setTimeout(() => document.getElementById('boot-screen').style.display = 'none', 1000);
     animate();
 };
 
-function startAudio() {
-    const ctx = new AudioContext();
-    const g = ctx.createGain();
-    const n = ctx.createOscillator();
-    n.type = 'triangle';
-    n.frequency.setValueAtTime(110, ctx.currentTime); // Low A
-    g.gain.setValueAtTime(0, ctx.currentTime);
-    g.gain.linearRampToValueAtTime(0.1, ctx.currentTime + 2);
-    n.connect(g); g.connect(ctx.destination);
-    n.start();
-}
-
 function init() {
-    clock = new THREE.Clock();
     scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x1a1814); // Constant Day
-    scene.fog = new THREE.FogExp2(0x1a1814, 0.0015);
+    scene.background = new THREE.Color(0x1a1814);
+    scene.fog = new THREE.FogExp2(0x1a1814, 0.002);
 
-    camera = new THREE.PerspectiveCamera(40, window.innerWidth / window.innerHeight, 1, 5000);
-    camera.position.set(0, 400, 800);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 5000);
+    camera.position.set(500, 500, 500);
 
     renderer = new THREE.WebGLRenderer({ antialias: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 1.0; 
     document.body.appendChild(renderer.domElement);
 
     controls = new OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.maxPolarAngle = Math.PI / 2.1;
+    clock = new THREE.Clock();
 
-    // --- LIGHTING (Fixed Brightness) ---
-    const sun = new THREE.DirectionalLight(0xfff5e6, 1.2);
-    sun.position.set(200, 400, 200);
+    // Lights
+    const sun = new THREE.DirectionalLight(0xfff5e6, 1.5);
+    sun.position.set(1, 2, 1);
     scene.add(sun);
-    scene.add(new THREE.AmbientLight(0x404050, 0.7));
+    scene.add(new THREE.AmbientLight(0x404050, 0.8));
 
-    // --- CENTER OF KNOWLEDGE (Bayt al-Hikmah) ---
-    const centerGrp = new THREE.Group();
-    const base = new THREE.Mesh(new THREE.CylinderGeometry(50, 55, 40, 8), new THREE.MeshStandardMaterial({color: 0x8b7355}));
-    const dome = new THREE.Mesh(new THREE.SphereGeometry(48, 32, 32, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x1a4538, metalness: 0.6}));
-    dome.position.y = 20;
-    centerGrp.add(base, dome);
-    centerGrp.userData = { name: "House of Wisdom", lore: "The center of the world's knowledge. Scholars gather here to translate the works of Aristotle and Euclid." };
-    scene.add(centerGrp);
+    // House of Wisdom (Centre)
+    const howBase = new THREE.Mesh(new THREE.CylinderGeometry(50, 55, 40, 8), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+    const howDome = new THREE.Mesh(new THREE.SphereGeometry(48, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x1a4538, metalness: 0.5}));
+    howDome.position.y = 20;
+    const how = new THREE.Group();
+    how.add(howBase, howDome);
+    how.userData = { name: "The House of Wisdom", sector: "Imperial Quarter", lore: "The grandest centre of learning in the medieval world." };
+    scene.add(how);
 
-    // --- CITY WITH NO OVERLAP (Grid Check) ---
+    // City Generation
     const grid = new Set();
-    const count = 5000;
-    const matClay = new THREE.MeshStandardMaterial({ color: 0x9c8263 });
-    const matDome = new THREE.MeshStandardMaterial({ color: 0x2a5a4a });
-    
-    cityMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), matClay, count);
-    domeMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.6, 8, 8), matDome, count);
-    scene.add(cityMesh, domeMesh);
+    const count = 4000;
+    cityMesh = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({color: 0x8b7355}), count);
+    detailMesh = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.7, 0.7, 1, 4), new THREE.MeshStandardMaterial({color: 0x4a3728}), count);
+    scene.add(cityMesh, detailMesh);
 
-    const dummy = new THREE.Object3D();
     let idx = 0;
-
-    for (let i = 0; i < 8000; i++) {
-        if (idx >= count) break;
-        const r = 120 + Math.random() * 600;
+    for (let i = 0; i < 10000 && idx < count; i++) {
+        const r = 130 + Math.random() * 600;
         const a = Math.random() * Math.PI * 2;
-        const x = Math.floor(Math.cos(a) * r / 15) * 15; // Snap to 15-unit grid
-        const z = Math.floor(Math.sin(a) * r / 15) * 15;
+        const x = Math.round(Math.cos(a) * r / 20) * 20;
+        const z = Math.round(Math.sin(a) * r / 20) * 20;
 
-        if (grid.has(`${x},${z}`) || Math.abs(z) < 60) continue;
+        if (grid.has(`${x},${z}`)) continue;
         grid.add(`${x},${z}`);
 
         const h = 10 + Math.random() * 25;
-        const w = 6 + Math.random() * 4;
-
-        buildingData.push({ x, z, h, w, currentY: 1000 + Math.random() * 500, targetY: h/2 });
-
-        dummy.position.set(x, 0, z);
-        dummy.scale.set(w, h, w);
-        dummy.updateMatrix();
-        cityMesh.setMatrixAt(idx, dummy.matrix);
+        const w = 8 + Math.random() * 4;
+        buildingData.push({ x, z, h, w, currY: 1000 + Math.random() * 500, targetY: h/2 });
         idx++;
     }
 
-    // --- CROWDS (VISIBLE PEOPLE) ---
-    const pCount = 3000;
-    peopleMesh = new THREE.InstancedMesh(new THREE.SphereGeometry(0.8, 8, 8), new THREE.MeshBasicMaterial({color: 0xffffff}), pCount);
+    // People
+    const pCount = 2000;
+    peopleMesh = new THREE.InstancedMesh(new THREE.CapsuleGeometry(0.5, 1, 4, 8), new THREE.MeshBasicMaterial({color: 0xffffff}), pCount);
     scene.add(peopleMesh);
     for (let i = 0; i < pCount; i++) {
-        const r = 130 + Math.random() * 580;
-        people.push({ r, a: Math.random() * Math.PI * 2, s: 0.001 + Math.random() * 0.002 });
+        peopleData.push({ r: 140 + Math.random() * 550, a: Math.random() * Math.PI * 2, s: 0.001 + Math.random() * 0.002 });
     }
+
+    document.getElementById('launch-btn').style.visibility = 'visible';
+    document.getElementById('loading-msg').innerText = "Ready for Departure";
 }
 
 function animate() {
@@ -108,27 +113,24 @@ function animate() {
     const t = clock.getElapsedTime();
     const dummy = new THREE.Object3D();
 
-    // 1. SATISFYING FALL
     buildingData.forEach((b, i) => {
-        b.currentY = THREE.MathUtils.lerp(b.currentY, b.targetY, 0.06);
-        dummy.position.set(b.x, b.currentY, b.z);
+        b.currY = THREE.MathUtils.lerp(b.currY, b.targetY, 0.05);
+        dummy.position.set(b.x, b.currY, b.z);
         dummy.scale.set(b.w, b.h, b.w);
         dummy.updateMatrix();
         cityMesh.setMatrixAt(i, dummy.matrix);
 
-        // Place dome on top
         dummy.position.y += b.h/2;
-        dummy.scale.set(b.w/2, b.w/2, b.w/2);
+        dummy.scale.set(b.w * 0.9, 1.5, b.w * 0.9);
         dummy.updateMatrix();
-        domeMesh.setMatrixAt(i, dummy.matrix);
+        detailMesh.setMatrixAt(i, dummy.matrix);
     });
     cityMesh.instanceMatrix.needsUpdate = true;
-    domeMesh.instanceMatrix.needsUpdate = true;
+    detailMesh.instanceMatrix.needsUpdate = true;
 
-    // 2. VISIBLE CROWDS
-    people.forEach((p, i) => {
+    peopleData.forEach((p, i) => {
         p.a += p.s;
-        dummy.position.set(Math.cos(p.a)*p.r, 2, Math.sin(p.a)*p.r);
+        dummy.position.set(Math.cos(p.a) * p.r, 1, Math.sin(p.a) * p.r);
         dummy.scale.set(1, 1, 1);
         dummy.updateMatrix();
         peopleMesh.setMatrixAt(i, dummy.matrix);
@@ -139,14 +141,28 @@ function animate() {
     renderer.render(scene, camera);
 }
 
-window.addEventListener('mousedown', (e) => {
-    const mouse = new THREE.Vector2((e.clientX/window.innerWidth)*2-1, -(e.clientY/window.innerHeight)*2+1);
+// Click Detection
+window.addEventListener('click', (e) => {
+    const mouse = new THREE.Vector2((e.clientX / window.innerWidth) * 2 - 1, -(e.clientY / window.innerHeight) * 2 + 1);
     const ray = new THREE.Raycaster();
     ray.setFromCamera(mouse, camera);
-    const hit = ray.intersectObjects(scene.children);
-    if(hit.length > 0 && hit[0].object.parent?.userData?.name) {
-        document.getElementById('hud').style.opacity = 1;
-        document.getElementById('b-name').innerText = hit[0].object.parent.userData.name;
-        document.getElementById('b-lore').innerText = hit[0].object.parent.userData.lore;
+    const hits = ray.intersectObjects(scene.children, true);
+    
+    if (hits.length > 0) {
+        const h = hits[0];
+        const hud = document.getElementById('hud');
+        hud.style.opacity = '1';
+        
+        if (h.object.parent?.userData?.name) {
+            document.getElementById('b-name').innerText = h.object.parent.userData.name;
+            document.getElementById('b-sector').innerText = h.object.parent.userData.sector;
+            document.getElementById('b-lore').innerText = h.object.parent.userData.lore;
+        } else if (h.instanceId !== undefined) {
+            document.getElementById('b-name').innerText = "Private Residence";
+            document.getElementById('b-sector').innerText = "Civilian Quarter";
+            document.getElementById('b-lore').innerText = "A sturdy dwelling constructed from sun-dried mud bricks, typical of the Abbasid period.";
+        }
     }
 });
+
+init();
