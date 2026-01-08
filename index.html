@@ -2,47 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baghdad AD 762 | The Silk Road Hub</title>
+    <title>Baghdad: The Jewel of the World</title>
     <style>
-        :root { --gold: #d4af37; --dust: #c2b280; --bg: #0a0908; }
+        :root { --gold: #d4af37; --stone: #c2b280; }
         body { margin: 0; overflow: hidden; background: #000; font-family: 'Cinzel', serif; }
-        
-        #overlay {
-            position: fixed; inset: 0; background: var(--bg); z-index: 1000;
+        #boot-screen {
+            position: fixed; inset: 0; background: #0a0908; z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
             color: var(--gold); text-align: center;
         }
-
-        .loader-bar { width: 200px; height: 2px; background: #222; margin-top: 20px; position: relative; overflow: hidden; }
-        .loader-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--gold); transition: 0.5s; }
-
-        #hud {
-            position: absolute; top: 10%; right: 40px; width: 350px;
-            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
-            border: 1px solid rgba(212, 175, 55, 0.3); padding: 30px;
-            color: #fff; transform: translateX(450px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        button {
+            background: none; border: 2px solid var(--gold); color: var(--gold);
+            padding: 20px 60px; font-size: 1.5rem; cursor: pointer; font-family: 'Cinzel';
+            transition: 0.3s; margin-top: 30px;
         }
-        #hud.active { transform: translateX(0); }
-        
-        .compass { position: absolute; bottom: 40px; left: 40px; width: 100px; height: 100px; border: 1px solid var(--gold); border-radius: 50%; opacity: 0.5; }
+        button:hover { background: var(--gold); color: #000; }
+        #hud {
+            position: absolute; bottom: 40px; left: 40px; width: 350px;
+            color: #fff; background: rgba(0,0,0,0.8); padding: 25px;
+            border-left: 4px solid var(--gold); pointer-events: none; opacity: 0; transition: 0.5s;
+        }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="overlay">
-        <h1 style="letter-spacing:20px; font-size: 3.5rem;">BAGHDAD</h1>
-        <div class="loader-bar"><div id="fill" class="loader-fill"></div></div>
-        <button id="start-btn" style="display:none; background:none; border:1px solid var(--gold); color:var(--gold); padding:15px 40px; margin-top:20px; cursor:pointer;" onclick="start()">DESCEND INTO THE CITY</button>
+    <div id="boot-screen">
+        <h1 style="letter-spacing:15px; font-size:3rem;">THE ROUND CITY</h1>
+        <p style="color:#888;">762 AD • RECONSTRUCTION</p>
+        <button onclick="launch()">INITIALIZE SIMULATION</button>
     </div>
-
     <div id="hud">
-        <small id="sector-tag" style="color:var(--gold); letter-spacing:3px;"></small>
-        <h2 id="b-name" style="margin: 10px 0;"></h2>
-        <p id="b-lore" style="font-style:italic; font-size:0.9rem; color:#ccc; line-height:1.6;"></p>
-        <div style="margin-top:20px; height:1px; background:rgba(212,175,55,0.2);"></div>
-        <div style="font-size:0.7rem; margin-top:10px; color:var(--gold);">CHRONICLER ENTRY #762</div>
+        <h2 id="b-name" style="margin:0; color:var(--gold);"></h2>
+        <p id="b-lore" style="font-style:italic; font-size:0.9rem;"></p>
     </div>
-
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", 
           "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
