@@ -2,69 +2,51 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baghdad: The Jewel of the East</title>
+    <title>Baghdad AD 762 | The Silk Road Hub</title>
     <style>
-        :root { --gold: #cca45e; --bg: #050403; }
-        body { margin: 0; overflow: hidden; background: var(--bg); font-family: 'Cinzel', serif; }
+        :root { --gold: #d4af37; --dust: #c2b280; --bg: #0a0908; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Cinzel', serif; }
         
-        .cinematic-bar { position: fixed; left: 0; width: 100%; height: 8vh; background: black; z-index: 50; pointer-events: none; }
-        .top { top: 0; } .bottom { bottom: 0; }
+        #overlay {
+            position: fixed; inset: 0; background: var(--bg); z-index: 1000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            color: var(--gold); text-align: center;
+        }
 
-        /* ADVANCED HUD */
+        .loader-bar { width: 200px; height: 2px; background: #222; margin-top: 20px; position: relative; overflow: hidden; }
+        .loader-fill { position: absolute; top: 0; left: 0; height: 100%; width: 0%; background: var(--gold); transition: 0.5s; }
+
         #hud {
-            position: absolute; bottom: 12vh; left: 40px; width: 380px;
-            background: rgba(10, 8, 6, 0.95); border: 1px solid var(--gold);
-            padding: 25px; color: #f4e4bc; display: none; z-index: 100;
-            backdrop-filter: blur(12px); border-radius: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.9);
+            position: absolute; top: 10%; right: 40px; width: 350px;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.3); padding: 30px;
+            color: #fff; transform: translateX(450px); transition: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        h1 { margin: 0; font-size: 1.6rem; color: var(--gold); text-transform: uppercase; letter-spacing: 2px; }
-        .label { font-size: 0.7rem; color: #887766; text-transform: uppercase; margin-top: 15px; display: block; border-bottom: 1px solid #332211; }
-        .lore-box { font-size: 0.95rem; margin-top: 10px; line-height: 1.7; color: #ccc; font-style: italic; }
-
-        /* INTERACTION HINTS */
-        #controls-hint {
-            position: absolute; bottom: 20px; right: 40px; color: var(--gold);
-            font-size: 0.8rem; text-align: right; z-index: 60; letter-spacing: 1px;
-        }
-
-        #clock { position: absolute; top: 10vh; right: 40px; text-align: right; color: var(--gold); z-index: 60; }
-        .time-text { font-size: 3rem; font-weight: bold; line-height: 0.8; }
-
-        #loader {
-            position: fixed; inset: 0; background: #000; color: var(--gold);
-            display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 1000;
-        }
+        #hud.active { transform: translateX(0); }
+        
+        .compass { position: absolute; bottom: 40px; left: 40px; width: 100px; height: 100px; border: 1px solid var(--gold); border-radius: 50%; opacity: 0.5; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="loader"><h1>RECONSTRUCTING BAGHDAD</h1><p>Initializing Citizens & Atmosphere...</p></div>
-    
-    <div class="cinematic-bar top"></div>
-    <div class="cinematic-bar bottom"></div>
-
-    <div id="clock">
-        <div style="letter-spacing:4px">YEAR 762 AD</div>
-        <div id="time-label" class="time-text">DAWN</div>
+    <div id="overlay">
+        <h1 style="letter-spacing:20px; font-size: 3.5rem;">BAGHDAD</h1>
+        <div class="loader-bar"><div id="fill" class="loader-fill"></div></div>
+        <button id="start-btn" style="display:none; background:none; border:1px solid var(--gold); color:var(--gold); padding:15px 40px; margin-top:20px; cursor:pointer;" onclick="start()">DESCEND INTO THE CITY</button>
     </div>
 
     <div id="hud">
-        <h1 id="ui-name">The Grand Mosque</h1>
-        <span class="label">Socio-Economic Sector</span>
-        <div id="ui-type" style="color:#fff">Imperial Center</div>
-        <span class="label">Chronicler's Secret</span>
-        <div id="ui-lore" class="lore-box">---</div>
-    </div>
-
-    <div id="controls-hint">
-        SCROLL: ZOOM | CLICK: INSPECT | RIGHT-CLICK: PAN<br>
-        <span style="color:#fff">SCROLL DEEP FOR STREET VIEW</span>
+        <small id="sector-tag" style="color:var(--gold); letter-spacing:3px;"></small>
+        <h2 id="b-name" style="margin: 10px 0;"></h2>
+        <p id="b-lore" style="font-style:italic; font-size:0.9rem; color:#ccc; line-height:1.6;"></p>
+        <div style="margin-top:20px; height:1px; background:rgba(212,175,55,0.2);"></div>
+        <div style="font-size:0.7rem; margin-top:10px; color:var(--gold);">CHRONICLER ENTRY #762</div>
     </div>
 
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", 
           "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
     </script>
-    <script type="module" src="app.js"></script>
+    <script src="app.js" type="module"></script>
 </body>
 </html>
