@@ -2,38 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Baghdad: The Centre of the World</title>
+    <title>Baghdad: The Jewel of the Abbasid Caliphate</title>
     <style>
-        :root { --gold: #d4af37; --bg: #1a1814; }
-        body { margin: 0; overflow: hidden; background: #000; font-family: 'Cinzel', serif; }
-        #boot-screen {
-            position: fixed; inset: 0; background: #0f0e0d; z-index: 1000;
+        :root { --gold: #d4af37; --dust: #c2b280; }
+        body { margin: 0; overflow: hidden; background: #1a1814; font-family: 'Cinzel', serif; }
+        #boot {
+            position: fixed; inset: 0; background: #0b0a09; z-index: 1000;
             display: flex; flex-direction: column; justify-content: center; align-items: center;
-            color: var(--gold); text-align: center;
+            color: var(--gold); text-align: center; transition: 1.5s;
         }
         button {
-            background: none; border: 2px solid var(--gold); color: var(--gold);
-            padding: 20px 60px; font-size: 1.5rem; cursor: pointer; font-family: 'Cinzel';
-            transition: 0.3s; margin-top: 30px; letter-spacing: 5px;
+            background: none; border: 1px solid var(--gold); color: var(--gold);
+            padding: 18px 50px; font-size: 1.2rem; cursor: pointer; font-family: 'Cinzel';
+            letter-spacing: 4px; transition: 0.4s; margin-top: 25px;
         }
-        button:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+        button:hover { background: var(--gold); color: #000; box-shadow: 0 0 30px rgba(212,175,55,0.4); }
         #hud {
-            position: absolute; bottom: 50px; left: 50px; width: 380px;
-            color: #f4e4bc; background: rgba(10, 10, 10, 0.95); padding: 30px;
-            border-top: 3px solid var(--gold); opacity: 0; transition: 0.5s; pointer-events: none;
+            position: absolute; top: 40px; right: 40px; width: 320px;
+            color: #f4e4bc; background: rgba(15, 14, 12, 0.9); padding: 25px;
+            border-left: 3px solid var(--gold); opacity: 0; transition: 0.5s; pointer-events: none;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="boot-screen">
-        <h1 style="letter-spacing:20px; font-size:3.5rem; margin:0;">BAGHDAD</h1>
-        <p style="color:#8c7d6b; letter-spacing:8px;">THE ROUND CITY • ANNO DOMINI 762</p>
-        <button onclick="launch()">INITIALISE</button>
+    <div id="boot">
+        <h1 style="letter-spacing:15px; margin:0;">BAGHDAD</h1>
+        <p style="color:#6d5f4f; letter-spacing:5px; font-size:0.8rem; margin-top:10px;">RECONSTRUCTING THE ROUND CITY • 762 AD</p>
+        <button onclick="launch()">INITIALISE CHRONICLE</button>
     </div>
     <div id="hud">
-        <h2 id="b-name" style="margin:0; color:var(--gold);"></h2>
-        <p id="b-lore" style="font-style:italic; font-size:0.95rem; line-height:1.6; margin-top:15px;"></p>
+        <h2 id="b-name" style="margin:0; color:var(--gold); font-size:1.4rem;"></h2>
+        <p id="b-lore" style="font-style:italic; font-size:0.9rem; line-height:1.6; margin-top:10px;"></p>
     </div>
     <script type="importmap">
         { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", 
