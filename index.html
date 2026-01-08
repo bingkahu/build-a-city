@@ -4,26 +4,24 @@
     <meta charset="UTF-8">
     <title>Baghdad: The Round City</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #1a1814; font-family: 'Cinzel', serif; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Cinzel', serif; }
         #boot { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; 
-                align-items: center; background: #0b0a09; z-index: 100; color: #d4af37; transition: 0.8s; }
+                align-items: center; background: #0b0a09; z-index: 100; color: #d4af37; text-align: center; }
         button { padding: 20px 50px; background: none; border: 2px solid #d4af37; color: #d4af37; 
-                 font-size: 1.5rem; cursor: pointer; letter-spacing: 5px; font-family: 'Cinzel'; }
+                 font-size: 1.5rem; cursor: pointer; letter-spacing: 5px; font-family: 'Cinzel'; margin-top: 20px; }
         button:hover { background: #d4af37; color: #000; }
         #hud { position: fixed; bottom: 30px; left: 30px; width: 300px; padding: 20px;
-               background: rgba(0,0,0,0.8); border-left: 4px solid #d4af37; color: #f4e4bc; 
+               background: rgba(0,0,0,0.85); border-left: 4px solid #d4af37; color: #f4e4bc; 
                opacity: 0; transition: 0.4s; pointer-events: none; }
-        #ui { position: fixed; top: 20px; left: 20px; color: #d4af37; pointer-events: none; }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel&display=swap" rel="stylesheet">
 </head>
 <body>
     <div id="boot">
-        <h1 style="letter-spacing:15px;">BAGHDAD</h1>
-        <p style="color: #6d5f4f;">CENTRE OF WORLD KNOWLEDGE • 762 AD</p>
-        <button onclick="launch()">INITIALISE</button>
+        <h1 style="letter-spacing:15px; margin:0;">BAGHDAD</h1>
+        <p style="color: #6d5f4f;">THE RADIANT CITY OF PEACE</p>
+        <button id="start-btn">BEGIN CHRONICLE</button>
     </div>
-    <div id="ui"><b>Mouse:</b> Orbit/Inspect | <b>Scroll:</b> Zoom</div>
     <div id="hud"><h2 id="b-title" style="margin:0; color:#d4af37;"></h2><p id="b-desc"></p></div>
 
     <script type="importmap">
@@ -34,26 +32,28 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, raycaster, mouse;
+        let scene, camera, renderer, controls, clock;
+        let isCinematic = true;
 
-        window.launch = () => {
-            // ACTUAL MUSIC: Real Middle Eastern Composition
+        document.getElementById('start-btn').addEventListener('click', () => {
             const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3');
             audio.loop = true;
-            audio.volume = 0.6;
+            audio.volume = 0.5;
             audio.play();
 
             document.getElementById('boot').style.opacity = '0';
             setTimeout(() => document.getElementById('boot').remove(), 800);
             init();
-        };
+        });
 
         function init() {
+            clock = new THREE.Clock();
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0xe8dcc0); 
+            scene.background = new THREE.Color(0xd2b48c); 
 
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-            camera.position.set(900, 700, 900); 
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 15000);
+            // Starting position for the cutscene (High and far)
+            camera.position.set(3000, 2000, 3000); 
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -61,85 +61,91 @@
 
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
-            raycaster = new THREE.Raycaster();
-            mouse = new THREE.Vector2();
+            controls.enabled = false; // Disable until cutscene ends
 
             const sun = new THREE.DirectionalLight(0xffffff, 2.5);
             sun.position.set(500, 1000, 500);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.4));
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
 
-            // THE RIVER TIGRIS (Improved texture)
-            const riverGeo = new THREE.PlaneGeometry(5000, 350);
-            const riverMat = new THREE.MeshStandardMaterial({ color: 0x142026, metalness: 0.6, roughness: 0.2 });
+            // --- THE SOLID FLOOR ---
+            const floorGeo = new THREE.PlaneGeometry(10000, 10000);
+            const floorMat = new THREE.MeshStandardMaterial({ color: 0xc2a679 });
+            const floor = new THREE.Mesh(floorGeo, floorMat);
+            floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -2;
+            scene.add(floor);
+
+            // --- THE BLUE RING RIVER ---
+            const riverGeo = new THREE.RingGeometry(1100, 1300, 64);
+            const riverMat = new THREE.MeshStandardMaterial({ color: 0x0055ff, metalness: 0.8, roughness: 0.2 });
             const river = new THREE.Mesh(riverGeo, riverMat);
             river.rotation.x = -Math.PI / 2;
-            river.position.y = -2;
+            river.position.y = 0.1; 
             scene.add(river);
 
-            // NATURAL CITY GENERATION
-            const count = 5000;
-            const city = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x8b7355 }), count);
+            // --- DETAILED BUILDINGS (Multiple Geometries) ---
+            const count = 4000;
+            const bodyGeo = new THREE.BoxGeometry(1, 1, 1);
+            const detailGeo = new THREE.BoxGeometry(1.1, 0.1, 1.1); // For "ledge" details
+            
+            const cityMaterial = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+            const city = new THREE.InstancedMesh(bodyGeo, cityMaterial, count);
+            const details = new THREE.InstancedMesh(detailGeo, cityMaterial, count);
+            
             const dummy = new THREE.Object3D();
 
             for (let i = 0; i < count; i++) {
-                const r = 280 + Math.random() * 800;
+                const r = 180 + Math.random() * 850;
                 const a = Math.random() * Math.PI * 2;
+                const x = Math.cos(a) * r + (Math.random() * 30 - 15);
+                const z = Math.sin(a) * r + (Math.random() * 30 - 15);
                 
-                // Add "Jitter" to break the grid - makes it organic
-                const x = Math.cos(a) * r + (Math.random() * 20 - 10);
-                const z = Math.sin(a) * r + (Math.random() * 20 - 10);
-                
-                if (Math.abs(z) < 200) continue; 
+                const h = 20 + Math.random() * 50;
+                const w = 15 + Math.random() * 15;
 
-                dummy.position.set(x, 0, z);
-                
-                // Building Variants: Mix of narrow towers and flat homes
-                const type = Math.random();
-                if (type > 0.8) {
-                    dummy.scale.set(12, 40 + Math.random() * 40, 12); // Narrow towers
-                } else {
-                    dummy.scale.set(18 + Math.random() * 10, 15 + Math.random() * 25, 18 + Math.random() * 10); // Flat homes
-                }
-                
-                dummy.position.y = dummy.scale.y / 2;
-                dummy.rotation.y = Math.random() * Math.PI; // Random rotation for natural look
+                // Main body
+                dummy.position.set(x, h/2, z);
+                dummy.scale.set(w, h, w);
+                dummy.rotation.y = Math.random() * Math.PI;
                 dummy.updateMatrix();
                 city.setMatrixAt(i, dummy.matrix);
-            }
-            scene.add(city);
 
-            // HOUSE OF WISDOM
+                // Add a "roof ledge" detail
+                dummy.position.y = h;
+                dummy.scale.set(w * 1.1, 2, w * 1.1);
+                dummy.updateMatrix();
+                details.setMatrixAt(i, dummy.matrix);
+            }
+            scene.add(city, details);
+
+            // --- HOUSE OF WISDOM ---
             const palace = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(80, 80, 70, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-            const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 0.9, roughness: 0.1}));
-            pDome.position.y = 35;
+            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(100, 110, 100, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(100, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 1, roughness: 0.1}));
+            pDome.position.y = 50;
             palace.add(pBase, pDome);
-            palace.userData = { title: "The House of Wisdom", desc: "The Bayt al-Hikma, where ancient Greek and Indian texts were translated into Arabic, sparking the Islamic Golden Age." };
             scene.add(palace);
 
-            window.addEventListener('mousedown', onSelect);
             animate();
-        }
-
-        function onSelect(event) {
-            mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-            mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-            raycaster.setFromCamera(mouse, camera);
-            const hits = raycaster.intersectObjects(scene.children, true);
-
-            const hud = document.getElementById('hud');
-            if (hits.length > 0) {
-                const obj = hits[0].object.parent?.userData?.title ? hits[0].object.parent.userData : { title: "Residential Quarter", desc: "Densely packed sun-dried brick houses designed to trap cool air in the alleyways." };
-                document.getElementById('b-title').innerText = obj.title;
-                document.getElementById('b-desc').innerText = obj.desc;
-                hud.style.opacity = '1';
-            } else {
-                hud.style.opacity = '0';
-            }
         }
 
         function animate() {
             requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            // CUTSCENE LOGIC: Slow camera swoop
+            if (isCinematic) {
+                camera.position.x = Math.cos(time * 0.2) * 2500;
+                camera.position.z = Math.sin(time * 0.2) * 2500;
+                camera.position.y -= 2;
+                camera.lookAt(0, 0, 0);
+
+                if (time > 6) { // End cutscene after 6 seconds
+                    isCinematic = false;
+                    controls.enabled = true;
+                }
+            }
+
             controls.update();
             renderer.render(scene, camera);
         }
