@@ -1,13 +1,13 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
-// --- 1. SCENE SETUP ---
+// --- 1. SETTING THE SCENE ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x0a0a12);
-scene.fog = new THREE.FogExp2(0x0a0a12, 0.015); // Atmospheric depth
+scene.background = new THREE.Color(0x1a150f);
+scene.fog = new THREE.FogExp2(0x1a150f, 0.008);
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(30, 30, 30);
+const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000);
+camera.position.set(100, 80, 100);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -15,104 +15,116 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 const controls = new OrbitControls(camera, renderer.domElement);
-controls.enableDamping = true; // Smooth camera movement
+controls.enableDamping = true;
 
-// --- 2. LIGHTING ---
-const ambientLight = new THREE.AmbientLight(0x404040, 2); 
-scene.add(ambientLight);
-
-const sunLight = new THREE.DirectionalLight(0xffffff, 2);
-sunLight.position.set(20, 50, 10);
+// --- 2. DESERT LIGHTING ---
+const sunLight = new THREE.DirectionalLight(0xffe0b3, 1.5);
+sunLight.position.set(50, 100, 50);
 scene.add(sunLight);
+scene.add(new THREE.AmbientLight(0x403020, 1.5));
 
-// --- 3. WORLD OBJECTS ---
+// --- 3. ARCHITECTURE GENERATOR ---
 const buildings = [];
+const sandstoneMat = new THREE.MeshStandardMaterial({ color: 0xd4b483, roughness: 0.8 });
+const domeMat = new THREE.MeshStandardMaterial({ color: 0x2e8b57, metalness: 0.3, roughness: 0.4 }); // Green tiles
+const goldMat = new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.9, roughness: 0.1 });
 
-// Create Ground
-const groundGeo = new THREE.PlaneGeometry(200, 200);
-const groundMat = new THREE.MeshStandardMaterial({ color: 0x151515 });
-const ground = new THREE.Mesh(groundGeo, groundMat);
+function createMedievalBuilding(x, z, type) {
+    const group = new THREE.Group();
+    let height = Math.random() * 10 + 5;
+    let width = 4 + Math.random() * 3;
+
+    // Main Body
+    const bodyGeo = new THREE.BoxGeometry(width, height, width);
+    const body = new THREE.Mesh(bodyGeo, sandstoneMat);
+    body.position.y = height / 2;
+    group.add(body);
+
+    // Add Dome or Roof
+    if (type === 'MOSQUE' || Math.random() > 0.7) {
+        const domeGeo = new THREE.SphereGeometry(width/1.8, 16, 16, 0, Math.PI * 2, 0, Math.PI/2);
+        const dome = new THREE.Mesh(domeGeo, type === 'PALACE' ? goldMat : domeMat);
+        dome.position.y = height;
+        group.add(dome);
+    }
+
+    group.position.set(x, 0, z);
+    
+    // Metadata for Interaction
+    const loreStrings = [
+        "A center of translation for Greek texts.",
+        "Home to a famous silk merchant.",
+        "A quiet courtyard with a dry fountain.",
+        "The scent of saffron lingers here.",
+        "Scholars gather here to discuss algebra."
+    ];
+
+    group.userData = {
+        name: type === 'PALACE' ? "House of Wisdom" : `Structure ${Math.floor(x+z)}`,
+        type: type,
+        district: Math.sqrt(x*x + z*z) < 40 ? "Inner Circle" : "Residential Ward",
+        lore: loreStrings[Math.floor(Math.random() * loreStrings.length)]
+    };
+
+    scene.add(group);
+    // Add all children meshes to raycast array
+    group.children.forEach(child => {
+        child.userData = group.userData;
+        buildings.push(child);
+    });
+}
+
+// --- 4. THE ROUND CITY LAYOUT ---
+// Ground
+const ground = new THREE.Mesh(new THREE.CircleGeometry(250, 64), new THREE.MeshStandardMaterial({ color: 0x3d2b1f }));
 ground.rotation.x = -Math.PI / 2;
 scene.add(ground);
 
-// Building Generator
-function spawnBuilding(x, z) {
-    const h = Math.random() * 15 + 3;
-    const w = 2 + Math.random() * 2;
-    
-    const geo = new THREE.BoxGeometry(w, h, w);
-    const mat = new THREE.MeshStandardMaterial({ 
-        color: 0x334466,
-        roughness: 0.2,
-        metalness: 0.5
-    });
-    
-    const building = new THREE.Mesh(geo, mat);
-    building.position.set(x, h/2, z);
-    
-    // Metadata for the UI
-    building.userData = {
-        name: `Sector ${Math.floor(Math.random()*900 + 100)}`,
-        district: x > 0 ? "North Plaza" : "South Industrial",
-        height: h
-    };
+// Central Palace
+createMedievalBuilding(0, 0, 'PALACE');
 
-    scene.add(building);
-    buildings.push(building);
-}
-
-// Generate City Grid
-for(let x = -5; x < 5; x++) {
-    for(let z = -5; z < 5; z++) {
-        if(Math.random() > 0.3) { // Create gaps for "streets"
-            spawnBuilding(x * 8, z * 8);
+// Generate Circular Grid
+for (let r = 20; r < 180; r += 15) {
+    const count = r / 2.5;
+    for (let i = 0; i < count; i++) {
+        const angle = (i / count) * Math.PI * 2;
+        const x = Math.cos(angle) * r;
+        const z = Math.sin(angle) * r;
+        
+        // Create "streets" by skipping some spots
+        if (Math.random() > 0.2) {
+            createMedievalBuilding(x, z, 'HOUSE');
         }
     }
 }
 
-// --- 4. INTERACTION LOGIC ---
+// --- 5. INTERACTION & RAYCASTING ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-// Hover Effect
-window.addEventListener('mousemove', (event) => {
+window.addEventListener('click', (event) => {
     mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-    
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(buildings);
-    document.body.style.cursor = intersects.length > 0 ? 'pointer' : 'default';
-});
-
-// Click Selection
-window.addEventListener('click', () => {
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(buildings);
 
     if (intersects.length > 0) {
-        const selected = intersects[0].object;
-        
-        // Update UI
+        const data = intersects[0].object.userData;
         const panel = document.getElementById('info-panel');
         panel.style.display = 'block';
-        document.getElementById('b-name').innerText = selected.userData.name;
-        document.getElementById('b-district').innerText = selected.userData.district;
-        document.getElementById('b-height').innerText = selected.userData.height.toFixed(1);
-
-        // Highlight Building
-        buildings.forEach(b => b.material.color.set(0x334466)); // Reset others
-        selected.material.color.set(0x00d4ff); // Highlight selected
+        document.getElementById('b-name').innerText = data.name;
+        document.getElementById('b-type').innerText = data.type;
+        document.getElementById('b-district').innerText = data.district;
+        document.getElementById('b-lore').innerText = data.lore;
     }
 });
 
-// Resize Handler
 window.addEventListener('resize', () => {
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// --- 5. ANIMATION LOOP ---
 function animate() {
     requestAnimationFrame(animate);
     controls.update();
