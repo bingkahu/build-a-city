@@ -3,48 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D City Explorer</title>
+    <title>The Round City: Baghdad</title>
     <style>
-        body { margin: 0; overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #111122; }
+        body { margin: 0; overflow: hidden; font-family: 'Palatino', serif; background-color: #1a150f; }
         
         #info-panel {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 280px;
-            padding: 20px;
-            background: rgba(15, 15, 30, 0.9);
-            color: white;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            position: absolute; top: 20px; right: 20px;
+            width: 280px; padding: 20px;
+            background: rgba(46, 35, 24, 0.95);
+            color: #f4e4bc; border-radius: 4px;
+            border: 2px solid #c5a059;
+            backdrop-filter: blur(5px);
             display: none;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5);
-            pointer-events: none; /* Allows clicking through the panel if needed */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            pointer-events: none;
         }
 
-        h2 { margin: 0 0 10px 0; color: #00d4ff; font-size: 1.2rem; }
-        p { margin: 5px 0; font-size: 0.9rem; color: #ccc; }
-        span { color: white; font-weight: bold; }
+        h2 { margin: 0 0 10px 0; color: #ffd700; font-variant: small-caps; border-bottom: 1px solid #c5a059; }
+        p { margin: 8px 0; font-size: 0.95rem; line-height: 1.4; }
+        span { color: #fff; font-weight: bold; }
 
         .controls-hint {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-            color: rgba(255,255,255,0.5);
-            font-size: 0.8rem;
+            position: absolute; bottom: 20px; left: 20px;
+            color: #c5a059; font-size: 0.8rem; letter-spacing: 1px;
         }
     </style>
 </head>
 <body>
     <div id="info-panel">
-        <h2 id="b-name">Building Name</h2>
-        <p>District: <span id="b-district">---</span></p>
-        <p>Height: <span id="b-height">---</span>m</p>
-        <p>Status: <span style="color: #44ff44;">Active</span></p>
+        <h2 id="b-name">Palace of the Golden Gate</h2>
+        <p>Type: <span id="b-type">Grand Mosque</span></p>
+        <p>District: <span id="b-district">Inner Circle</span></p>
+        <p>Lore: <span id="b-lore">---</span></p>
     </div>
 
-    <div class="controls-hint">Orbit: Left Click | Zoom: Scroll | Pan: Right Click</div>
+    <div class="controls-hint">SURVEY THE CITY: LEFT CLICK TO ORBIT | RIGHT CLICK TO PAN | CLICK BUILDINGS TO INSPECT</div>
 
     <script type="importmap">
         {
