@@ -9,19 +9,40 @@
         :root { --gold: #d4af37; --sand: #f4e4bc; }
         body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Cinzel', serif; }
         
-        #boot {
+        #boot-sequence {
             position: fixed; inset: 0; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; background: #0b0a09; 
-            z-index: 100; transition: opacity 0.8s;
+            z-index: 100; transition: opacity 1.5s ease-in-out; color: white; text-align: center;
+            padding: 20px;
         }
+        .intro-slide {
+            opacity: 0;
+            position: absolute; /* Allows slides to stack, controlled by JS opacity */
+            transition: opacity 1.5s ease-in-out;
+            max-width: 800px;
+        }
+        .intro-slide.active {
+            opacity: 1;
+        }
+        .intro-slide h1 { color: var(--gold); letter-spacing: 15px; margin-bottom: 20px; font-size: 2.8em; }
+        .intro-slide p { color: #a89078; line-height: 1.8; font-size: 1.1em; letter-spacing: 1px;}
+        .intro-slide .small-text { font-size: 0.9em; color: #6d5f4f; margin-top: 30px; }
+
         button {
             padding: 15px 40px; background: none; border: 2px solid var(--gold);
             color: var(--gold); font-family: 'Cinzel'; cursor: pointer; font-size: 1.2rem;
-            letter-spacing: 5px; transition: 0.3s; margin-top: 20px;
+            letter-spacing: 5px; transition: 0.3s; margin-top: 40px; /* Adjust margin for spacing */
+            position: relative; /* Keep button on top */
+            z-index: 1;
+            opacity: 0; /* Hidden by default, shown when sequence ends */
+            pointer-events: none; /* Not clickable until active */
+        }
+        button.active {
+            opacity: 1;
+            pointer-events: all;
         }
         button:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
 
-        /* Support UI */
         #ui-layer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 10; }
         .ui-btn { 
             pointer-events: all; text-decoration: none; font-size: 0.8rem; padding: 8px 15px; 
@@ -34,9 +55,28 @@
 </head>
 <body>
 
-    <div id="boot">
-        <h1 style="color: var(--gold); letter-spacing: 15px; margin:0;">BAGHDAD</h1>
-        <p style="color: #6d5f4f; letter-spacing: 2px;">ARCHITECTURAL ENGINE V2.5</p>
+    <div id="boot-sequence">
+        <div class="intro-slide" id="slide1">
+            <h1>BAGHDAD</h1>
+            <p>The "City of Peace", founded in 762 CE by Caliph al-Mansur, was designed as a perfect circle, symbolizing cosmic harmony and imperial power.</p>
+            <p class="small-text">Press ENTER to continue</p>
+        </div>
+        <div class="intro-slide" id="slide2">
+            <h1>GOLDEN AGE</h1>
+            <p>Baghdad quickly became the heart of the Islamic Golden Age. Its libraries, academies, and the legendary House of Wisdom preserved and advanced global knowledge.</p>
+            <p class="small-text">Press ENTER to continue</p>
+        </div>
+        <div class="intro-slide" id="slide3">
+            <h1>THIS SIMULATION</h1>
+            <p>This is a 3D architectural reconstruction, a digital homage to Baghdad's historic layout, featuring thousands of procedurally generated structures and a representation of the Tigris River.</p>
+            <p class="small-text">Press ENTER to continue</p>
+        </div>
+        <div class="intro-slide" id="slide4">
+            <h1>HAVE FUN!</h1>
+            <p>Explore the radiant city. Use your mouse to navigate, zoom, and immerse yourself in this ancient marvel.</p>
+            <p class="small-text">Press ENTER to begin the journey</p>
+        </div>
+        
         <button id="start-btn">BEGIN CHRONICLE</button>
     </div>
 
@@ -57,20 +97,56 @@
 
         let scene, camera, renderer, controls, clock, river;
 
-        document.getElementById('start-btn').onclick = () => {
+        // --- INTRO SEQUENCE LOGIC ---
+        const slides = document.querySelectorAll('.intro-slide');
+        const startButton = document.getElementById('start-btn');
+        let currentSlide = 0;
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+            if (index === slides.length -1) {
+                startButton.classList.add('active'); // Show button on last slide
+            } else {
+                startButton.classList.remove('active'); // Hide button
+            }
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') {
+                if (currentSlide < slides.length - 1) {
+                    currentSlide++;
+                    showSlide(currentSlide);
+                } else {
+                    // Last slide, so simulate button click
+                    startButton.click();
+                }
+            }
+        }
+
+        document.addEventListener('keydown', handleKeyPress);
+        showSlide(currentSlide); // Show the first slide immediately
+
+        // --- EXISTING ENGINE START LOGIC (UNCHANGED) ---
+        startButton.onclick = () => {
+            document.removeEventListener('keydown', handleKeyPress); // Stop listening for Enter
             const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3');
             audio.loop = true;
             audio.volume = 0.5;
             audio.play();
-            document.getElementById('boot').style.opacity = '0';
-            setTimeout(() => { document.getElementById('boot').remove(); init(); }, 800);
+            document.getElementById('boot-sequence').style.opacity = '0';
+            setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1500); // Increased timeout for fade
         };
 
+        // --- THREE.JS ENGINE INITIALIZATION (UNCHANGED) ---
         function init() {
             clock = new THREE.Clock();
             scene = new THREE.Scene();
             
-            // Horizon Haze Fog
             const skyColor = 0x87CEEB;
             scene.background = new THREE.Color(skyColor); 
             scene.fog = new THREE.Fog(skyColor, 3500, 9500);
@@ -80,6 +156,7 @@
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
@@ -97,7 +174,6 @@
         }
 
         function createWorld() {
-            // Floor
             const floor = new THREE.Mesh(
                 new THREE.PlaneGeometry(20000, 20000),
                 new THREE.MeshStandardMaterial({ color: 0xd2b48c, roughness: 1 })
@@ -106,7 +182,6 @@
             floor.receiveShadow = true;
             scene.add(floor);
 
-            // River Tigris
             const riverGeo = new THREE.RingGeometry(2100, 2500, 64);
             const riverMat = new THREE.MeshStandardMaterial({ color: 0x0077be, metalness: 0.8, roughness: 0.1, transparent: true, opacity: 0.8 });
             river = new THREE.Mesh(riverGeo, riverMat);
@@ -114,7 +189,6 @@
             river.position.y = 5;
             scene.add(river);
 
-            // City Buildings
             const count = 4500;
             const bodyGeo = new THREE.BoxGeometry(1, 1, 1);
             const cityMat = new THREE.MeshStandardMaterial({ color: 0xa89078 });
@@ -135,7 +209,6 @@
             cityBody.castShadow = true;
             scene.add(cityBody);
 
-            // House of Wisdom
             const dome = new THREE.Mesh(
                 new THREE.SphereGeometry(160, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), 
                 new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 1, roughness: 0.1})
