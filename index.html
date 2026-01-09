@@ -9,45 +9,60 @@
         :root { --gold: #d4af37; --sand: #f4e4bc; }
         body { margin: 0; overflow: hidden; background: #0b0a09; font-family: 'Cinzel', serif; }
         
-        /* [Existing Intro Styles Unchanged] */
         #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0a09; z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
-        .intro-slide { opacity: 0; position: absolute; transition: opacity 1.5s; max-width: 800px; }
-        .intro-slide.active { opacity: 1; }
-        .intro-slide h1 { color: var(--gold); letter-spacing: 15px; }
-        button { padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s; }
-        button.active { opacity: 1; pointer-events: all; }
+        .intro-slide { opacity: 0; position: absolute; transition: opacity 1.5s; max-width: 800px; pointer-events: none; visibility: hidden; top: 25%; }
+        .intro-slide.active { opacity: 1; visibility: visible; }
+        .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
+        .intro-slide p { color: #a89078; font-size: 1.2rem; margin-top: 20px; }
+        
+        /* Credits Line */
+        .dev-credit { margin-top: 40px; font-size: 0.9rem; color: #555; letter-spacing: 2px; }
 
-        /* NEW UI FOR DESCRIPTIONS */
-        #building-card {
-            position: fixed; top: 20px; right: 20px; width: 300px;
-            background: rgba(11, 10, 9, 0.9); border: 1px solid var(--gold);
-            color: var(--sand); padding: 20px; display: none; z-index: 50;
-            backdrop-filter: blur(10px); pointer-events: all;
+        #start-btn { 
+            padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); 
+            cursor: pointer; opacity: 0; pointer-events: none; transition: 0.3s; 
+            font-family: 'Cinzel'; letter-spacing: 3px; position: absolute; top: 65%;
+            z-index: 110;
         }
-        #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.2rem; }
-        #building-card p { font-size: 0.9rem; line-height: 1.4; margin: 0; }
+        #start-btn.active { opacity: 1; pointer-events: all; }
+        #start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
 
+        #building-card {
+            position: fixed; top: 20px; right: 20px; width: 320px;
+            background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold);
+            color: var(--sand); padding: 25px; display: none; z-index: 50;
+            backdrop-filter: blur(15px); transition: opacity 0.5s;
+        }
+        #close-card { position: absolute; top: 10px; right: 10px; color: var(--gold); cursor: pointer; font-size: 1.5rem; line-height: 1; }
+        #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); padding-right: 25px; }
+        #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
+        
         #ui-layer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 10; }
-        .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.8rem; padding: 8px 15px; background: rgba(0,0,0,0.6); border: 1px solid var(--gold); color: var(--gold); }
+        .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
     </style>
 </head>
 <body>
 
     <div id="building-card">
-        <h2 id="card-title">Structure</h2>
-        <p id="card-desc">Click a building to investigate.</p>
+        <div id="close-card">×</div>
+        <h2 id="card-title">Structure Found</h2>
+        <p id="card-desc">Investigating architectural records...</p>
     </div>
 
     <div id="boot-sequence">
         <div class="intro-slide active" id="slide1"><h1>BAGHDAD</h1><p>The "City of Peace", founded in 762 CE.</p></div>
-        <div class="intro-slide" id="slide2"><h1>GOLDEN AGE</h1><p>The heart of science and culture.</p></div>
-        <div class="intro-slide" id="slide3"><h1>SIMULATION</h1><p>A digital homage to history.</p></div>
-        <div class="intro-slide" id="slide4"><h1>HAVE FUN!</h1><p>Explore the radiant city.</p></div>
+        <div class="intro-slide" id="slide2"><h1>GOLDEN AGE</h1><p>The global epicenter of science and philosophy.</p></div>
+        <div class="intro-slide" id="slide3"><h1>THE ROUND CITY</h1><p>A 3D simulation of historic Madinat al-Salam.</p></div>
+        <div class="intro-slide" id="slide4">
+            <h1>HAVE FUN!</h1>
+            <p>Explore the city. Click any structure to learn its history.</p>
+            <div class="dev-credit">LEAD ARCHITECT: <span style="color:var(--gold)">[YOUR NAME]</span></div>
+        </div>
         <button id="start-btn">BEGIN CHRONICLE</button>
     </div>
 
     <div id="ui-layer">
-        <a href="https://ko-fi.com/matteo44642" target="_blank" class="ui-btn">Support on Ko-fi</a>
+        <a href="https://ko-fi.com/matteo44642" target="_blank" class="ui-btn">☕ SUPPORT ON KO-FI</a>
         <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
     </div>
 
@@ -59,31 +74,28 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, clock, river, cityBody, raycaster, mouse;
+        let scene, camera, renderer, controls, clock, cityBody, detailsBody, raycaster, mouse;
+        let isCinematic = true;
+        let cardTimeout;
 
-        // DATA POOLS FOR UNIQUE DESCRIPTIONS
-        const prefixes = ["The House of", "The Quarters of", "The Workshop of", "The Estate of", "The Residence of"];
-        const names = ["a Silk Merchant", "a Court Astrologer", "a Calligrapher", "a Paper Maker", "a Translator", "an Abbasid Official", "a Mathmatician"];
-        const details = [
-            "This structure features high mud-brick walls designed to keep the interior cool during the desert noon.",
-            "Inside, scholars are currently translating ancient Greek texts into Arabic.",
-            "The rooftop is used for drying dyed fabrics and star-gazing at night.",
-            "A small courtyard hidden within contains a fountain and a single pomegranate tree.",
-            "The cellar is filled with scrolls from the House of Wisdom.",
-            "Incense smoke wafts from the narrow windows, carrying scents from the Silk Road."
-        ];
+        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of", "The Residence of", "The Scholarly Retreat of", "The Private Library of", "The Fragrant Shop of", "The Secure Vault of", "The School of", "The Villa of", "The Foundry of"];
+        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe", "a Paper Manufacturer", "a Greek Translator", "a Spice Merchant", "a Court Musician", "a Perfume Distiller", "a Wisdom Seeker", "a Veteran Guard", "a Calligrapher"];
+        const narratives = ["This building features high mud-brick walls and a deep wind-tower for natural cooling.", "The courtyard contains a rare mechanical fountain powered by hidden hydraulics.", "The roof is used for astrolabe celestial observations at midnight.", "Vats of indigo dye dominate the ground floor, scenting the entire street.", "Inside, mulberry-paper scrolls are being cataloged for the House of Wisdom.", "A secret underground cellar stores snow brought from the mountains.", "The walls are decorated with intricate geometric girih patterns.", "Casks of imported ink from China wait by the door.", "The balcony offers a view of the Golden Gate for state processions.", "Small clay pipes run through the walls for water distribution.", "Dried herbs hang from the rafters for the nearby Bimaristan.", "A heavy cedar door protects the valuable leather-bound books inside."];
 
-        // INTRO LOGIC
         const slides = document.querySelectorAll('.intro-slide');
         const startBtn = document.getElementById('start-btn');
         let currentSlide = 0;
 
         window.addEventListener('keydown', (e) => {
-            if(e.key === 'Enter' && currentSlide < slides.length - 1) {
-                slides[currentSlide].classList.remove('active');
-                currentSlide++;
-                slides[currentSlide].classList.add('active');
-                if(currentSlide === 3) startBtn.classList.add('active');
+            if(e.key === 'Enter') {
+                if(currentSlide < slides.length - 1) {
+                    slides[currentSlide].classList.remove('active');
+                    currentSlide++;
+                    slides[currentSlide].classList.add('active');
+                    if(currentSlide === 3) startBtn.classList.add('active');
+                } else if(startBtn.classList.contains('active')) {
+                    startBtn.click();
+                }
             }
         });
 
@@ -98,10 +110,10 @@
             clock = new THREE.Clock();
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
-            scene.fog = new THREE.Fog(0x87CEEB, 3500, 9500);
+            scene.fog = new THREE.Fog(0x87CEEB, 3000, 10000);
 
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-            camera.position.set(3800, 2800, 3800);
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 15000);
+            camera.position.set(3000, 2000, 3000);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -110,66 +122,105 @@
 
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
+            controls.enabled = false;
 
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
 
-            const sun = new THREE.DirectionalLight(0xffffff, 2.2);
-            sun.position.set(1500, 3500, 1000);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
+            const sun = new THREE.DirectionalLight(0xffffff, 2.5);
+            sun.position.set(500, 1000, 500);
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
 
-            createWorld();
-            window.addEventListener('click', onDocumentMouseDown);
+            createCity();
+            window.addEventListener('click', onClick);
+            document.getElementById('close-card').onclick = (e) => { 
+                e.stopPropagation(); 
+                document.getElementById('building-card').style.display = 'none'; 
+            };
             animate();
         }
 
-        function createWorld() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(20000, 20000), new THREE.MeshStandardMaterial({ color: 0xd2b48c }));
+        function createCity() {
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshStandardMaterial({ color: 0xcdb891 }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
-            const riverGeo = new THREE.RingGeometry(2100, 2500, 64);
-            river = new THREE.Mesh(riverGeo, new THREE.MeshStandardMaterial({ color: 0x0077be, metalness: 0.8, transparent: true, opacity: 0.8 }));
+            const river = new THREE.Mesh(new THREE.RingGeometry(1100, 1300, 64), new THREE.MeshStandardMaterial({ color: 0x0055ff, metalness: 0.8 }));
             river.rotation.x = -Math.PI / 2;
-            river.position.y = 5;
+            river.position.y = 0.1;
             scene.add(river);
 
-            const count = 4500;
-            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0xa89078 }), count);
+            const count = 4000;
+            const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, count);
+            detailsBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1.1, 0.1, 1.1), cityMat, count);
+            
             const dummy = new THREE.Object3D();
             for (let i = 0; i < count; i++) {
-                const r = 350 + Math.random() * 1450;
+                const r = 180 + Math.random() * 850;
                 const a = Math.random() * Math.PI * 2;
-                const h = 40 + Math.random() * 90;
-                dummy.position.set(Math.cos(a) * r, h/2, Math.sin(a) * r);
-                dummy.scale.set(35, h, 35);
+                const h = 20 + Math.random() * 50;
+                const w = 15 + Math.random() * 15;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+
+                dummy.position.set(x, h/2, z);
+                dummy.scale.set(w, h, w);
+                dummy.rotation.y = Math.random() * Math.PI;
                 dummy.updateMatrix();
                 cityBody.setMatrixAt(i, dummy.matrix);
+
+                dummy.position.y = h;
+                dummy.scale.set(w * 1.1, 2, w * 1.1);
+                dummy.updateMatrix();
+                detailsBody.setMatrixAt(i, dummy.matrix);
             }
-            scene.add(cityBody);
+            scene.add(cityBody, detailsBody);
+
+            const palace = new THREE.Group();
+            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(100, 110, 100, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(100, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 1}));
+            pDome.position.y = 50;
+            palace.add(pBase, pDome);
+            scene.add(palace);
         }
 
-        function onDocumentMouseDown(event) {
+        function onClick(event) {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-
             const intersects = raycaster.intersectObject(cityBody);
+            
             if (intersects.length > 0) {
-                // Generate unique description using the ID of the clicked instance
                 const id = intersects[0].instanceId;
-                const title = prefixes[id % prefixes.length] + " " + names[id % names.length];
-                const desc = details[id % details.length] + " Located in District " + (id % 12 + 1) + ".";
+                const card = document.getElementById('building-card');
+                const title = prefixes[id % prefixes.length] + " " + owners[(id+7) % owners.length];
+                const story = narratives[(id*2) % narratives.length];
                 
                 document.getElementById('card-title').innerText = title;
-                document.getElementById('card-desc').innerText = desc;
-                document.getElementById('building-card').style.display = 'block';
+                document.getElementById('card-desc').innerHTML = story + "<br><br><i>District ID: " + id + "</i>";
+                
+                card.style.display = 'block';
+                card.style.opacity = '1';
+
+                clearTimeout(cardTimeout);
+                cardTimeout = setTimeout(() => { 
+                    card.style.opacity = '0'; 
+                    setTimeout(() => { if(card.style.opacity === '0') card.style.display = 'none'; }, 500); 
+                }, 10000);
             }
         }
 
         function animate() {
             requestAnimationFrame(animate);
-            if(river) river.material.opacity = 0.7 + Math.sin(clock.getElapsedTime()) * 0.1;
+            const time = clock.getElapsedTime();
+            if (isCinematic) {
+                camera.position.x = Math.cos(time * 0.2) * 2500;
+                camera.position.z = Math.sin(time * 0.2) * 2500;
+                camera.position.y -= 1.5;
+                camera.lookAt(0, 0, 0);
+                if (time > 6) { isCinematic = false; controls.enabled = true; }
+            }
             controls.update();
             renderer.render(scene, camera);
         }
