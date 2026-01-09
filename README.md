@@ -3,7 +3,7 @@
 
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 ![Three.js](https://img.shields.io/badge/Engine-Three.js-black?style=flat&logo=three.js)
-![GitHub stars](https://img.shields.io/github/stars/bingkahu/build-a-city?style=social)
+[![GitHub stars](https://img.shields.io/github/stars/bingkahu/build-a-city?style=social)](https://github.com/bingkahu/build-a-city/stargazers)
 
 ---
 
