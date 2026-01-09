@@ -7,6 +7,11 @@
 
 ---
 
+## ⭐ Support the Project
+If you find this reconstruction helpful or interesting, **please consider giving it a star!** It helps the project gain visibility and motivates me to keep building out the historical engine.
+
+---
+
 ## 🌐 Live Demo
 **[Explore the Round City Here](https://bingkahu.github.io/build-a-city/)**
 
@@ -19,7 +24,7 @@ This project is a high-performance, browser-based 3D visualization of **Baghdad 
 * **Interactive Landmarks:** Click on the **House of Wisdom**, the **Grand Palace**, or the **City Gates** to view historical metadata.
 * **Cinematic Camera:** Experience an automated fly-through of the city upon initialization.
 * **Procedural Generation:** The city layout follows the historical concentric circle plan designed by Caliph al-Mansur.
-* **Immersive Audio:** Features period-appropriate soundtrack integration for a museum-grade experience.
+* **Immersive Audio:** Features a period-appropriate soundtrack (SoundHelix Song 2) for a museum-grade experience.
 
 ---
 
@@ -32,7 +37,7 @@ This project is a high-performance, browser-based 3D visualization of **Baghdad 
 ---
 
 ## 🏗️ Installation & Local Setup
-To run this project locally or contribute to the engine:
+To run this project locally:
 
 1. **Clone the repository:**
    ```bash
