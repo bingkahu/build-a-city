@@ -21,26 +21,30 @@
         }
         button:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
 
-        #credits {
-            position: fixed; bottom: 20px; right: 20px; text-align: right; z-index: 10;
+        /* Support UI */
+        #ui-layer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 10; }
+        .ui-btn { 
+            pointer-events: all; text-decoration: none; font-size: 0.8rem; padding: 8px 15px; 
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); border: 1px solid var(--gold); color: var(--gold);
+            transition: 0.3s;
         }
-        .social-link {
-            color: var(--gold); text-decoration: none; font-size: 0.8rem;
-            border: 1px solid rgba(212, 175, 55, 0.3); padding: 5px 12px;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
-        }
+        .ui-btn:hover { background: var(--gold); color: #000; }
+        .kofi-img { height: 15px; vertical-align: middle; margin-right: 5px; }
     </style>
 </head>
 <body>
 
     <div id="boot">
         <h1 style="color: var(--gold); letter-spacing: 15px; margin:0;">BAGHDAD</h1>
-        <p style="color: #6d5f4f; letter-spacing: 2px;">ARCHITECTURAL ENGINE V2.1</p>
+        <p style="color: #6d5f4f; letter-spacing: 2px;">ARCHITECTURAL ENGINE V2.5</p>
         <button id="start-btn">BEGIN CHRONICLE</button>
     </div>
 
-    <div id="credits">
-        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="social-link">⭐ STAR ON GITHUB</a>
+    <div id="ui-layer">
+        <a href="https://ko-fi.com/matteo44642" target="_blank" class="ui-btn">
+            <img src="https://storage.ko-fi.com/cdn/cup-border.png" class="kofi-img"> Support on Ko-fi
+        </a>
+        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
     </div>
 
     <script type="importmap">
@@ -66,18 +70,16 @@
             clock = new THREE.Clock();
             scene = new THREE.Scene();
             
-            // --- FIXED FOG LOGIC ---
-            // Using Linear Fog: Start clear for 3000 units, fade to sky color by 9000
+            // Horizon Haze Fog
             const skyColor = 0x87CEEB;
             scene.background = new THREE.Color(skyColor); 
-            scene.fog = new THREE.Fog(skyColor, 3000, 9000);
+            scene.fog = new THREE.Fog(skyColor, 3500, 9500);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-            camera.position.set(3500, 2500, 3500);
+            camera.position.set(3800, 2800, 3800);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
@@ -85,7 +87,6 @@
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
 
-            // --- STATIC DAYLIGHT ---
             const sun = new THREE.DirectionalLight(0xffffff, 2.2);
             sun.position.set(1500, 3500, 1000);
             sun.castShadow = true;
@@ -96,7 +97,7 @@
         }
 
         function createWorld() {
-            // 1. DESERT FLOOR
+            // Floor
             const floor = new THREE.Mesh(
                 new THREE.PlaneGeometry(20000, 20000),
                 new THREE.MeshStandardMaterial({ color: 0xd2b48c, roughness: 1 })
@@ -105,74 +106,48 @@
             floor.receiveShadow = true;
             scene.add(floor);
 
-            // 2. TIGRIS RIVER (Blue Ring around the city)
-            const riverGeo = new THREE.RingGeometry(1900, 2300, 64);
-            const riverMat = new THREE.MeshStandardMaterial({ 
-                color: 0x0077be, 
-                metalness: 0.7, 
-                roughness: 0.2, 
-                transparent: true, 
-                opacity: 0.8 
-            });
+            // River Tigris
+            const riverGeo = new THREE.RingGeometry(2100, 2500, 64);
+            const riverMat = new THREE.MeshStandardMaterial({ color: 0x0077be, metalness: 0.8, roughness: 0.1, transparent: true, opacity: 0.8 });
             river = new THREE.Mesh(riverGeo, riverMat);
             river.rotation.x = -Math.PI / 2;
-            river.position.y = 5; 
+            river.position.y = 5;
             scene.add(river);
 
-            // 3. BUILDINGS & LEDGES (Optimized)
+            // City Buildings
             const count = 4500;
             const bodyGeo = new THREE.BoxGeometry(1, 1, 1);
-            const ledgeGeo = new THREE.BoxGeometry(1.1, 0.1, 1.1);
             const cityMat = new THREE.MeshStandardMaterial({ color: 0xa89078 });
-            
             const cityBody = new THREE.InstancedMesh(bodyGeo, cityMat, count);
-            const cityLedges = new THREE.InstancedMesh(ledgeGeo, cityMat, count);
             
             const dummy = new THREE.Object3D();
             for (let i = 0; i < count; i++) {
-                const r = 350 + Math.random() * 1300; // Stay inside river
+                const r = 350 + Math.random() * 1450;
                 const a = Math.random() * Math.PI * 2;
                 const h = 40 + Math.random() * 90;
-                const w = 30 + Math.random() * 15;
+                const w = 35;
 
-                const x = Math.cos(a) * r;
-                const z = Math.sin(a) * r;
-
-                // Body
-                dummy.position.set(x, h/2, z);
+                dummy.position.set(Math.cos(a) * r, h/2, Math.sin(a) * r);
                 dummy.scale.set(w, h, w);
                 dummy.updateMatrix();
                 cityBody.setMatrixAt(i, dummy.matrix);
-
-                // Ledge
-                dummy.position.set(x, h, z);
-                dummy.scale.set(w, 2, w);
-                dummy.updateMatrix();
-                cityLedges.setMatrixAt(i, dummy.matrix);
             }
             cityBody.castShadow = true;
-            cityBody.receiveShadow = true;
-            scene.add(cityBody, cityLedges);
+            scene.add(cityBody);
 
-            // 4. HOUSE OF WISDOM (Center)
-            const center = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(140, 150, 220, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-            const pDome = new THREE.Mesh(
-                new THREE.SphereGeometry(140, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), 
+            // House of Wisdom
+            const dome = new THREE.Mesh(
+                new THREE.SphereGeometry(160, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), 
                 new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 1, roughness: 0.1})
             );
-            pDome.position.y = 110;
-            center.add(pBase, pDome);
-            scene.add(center);
+            dome.position.y = 50;
+            scene.add(dome);
         }
 
         function animate() {
             requestAnimationFrame(animate);
             const time = clock.getElapsedTime();
-
-            // Subtle River Shimmer
             if(river) river.material.opacity = 0.7 + Math.sin(time) * 0.1;
-
             controls.update();
             renderer.render(scene, camera);
         }
