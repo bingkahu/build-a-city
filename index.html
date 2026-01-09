@@ -6,25 +6,41 @@
     <title>Baghdad: The Great Round City</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root { --gold: #d4af37; --sand: #f4e4bc; }
         body { margin: 0; overflow: hidden; background: #87CEEB; font-family: 'Cinzel', serif; }
+        
         #boot {
             position: fixed; inset: 0; display: flex; flex-direction: column; 
             justify-content: center; align-items: center; background: #0b0a09; 
             z-index: 100; transition: opacity 0.8s;
         }
         button {
-            padding: 15px 40px; background: none; border: 2px solid #d4af37;
-            color: #d4af37; font-family: 'Cinzel'; cursor: pointer; font-size: 1.2rem;
-            letter-spacing: 5px; transition: 0.3s;
+            padding: 15px 40px; background: none; border: 2px solid var(--gold);
+            color: var(--gold); font-family: 'Cinzel'; cursor: pointer; font-size: 1.2rem;
+            letter-spacing: 5px; transition: 0.3s; margin-top: 20px;
         }
-        button:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
+        button:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+
+        #credits {
+            position: fixed; bottom: 20px; right: 20px; text-align: right; z-index: 10;
+        }
+        .social-link {
+            color: var(--gold); text-decoration: none; font-size: 0.8rem;
+            border: 1px solid rgba(212, 175, 55, 0.3); padding: 5px 12px;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+        }
     </style>
 </head>
 <body>
 
     <div id="boot">
-        <h1 style="color: #d4af37; letter-spacing: 15px;">BAGHDAD</h1>
+        <h1 style="color: var(--gold); letter-spacing: 15px; margin:0;">BAGHDAD</h1>
+        <p style="color: #6d5f4f; letter-spacing: 2px;">ARCHITECTURAL ENGINE V2.1</p>
         <button id="start-btn">BEGIN CHRONICLE</button>
+    </div>
+
+    <div id="credits">
+        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="social-link">⭐ STAR ON GITHUB</a>
     </div>
 
     <script type="importmap">
@@ -35,11 +51,13 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, clock;
+        let scene, camera, renderer, controls, clock, river;
 
         document.getElementById('start-btn').onclick = () => {
             const audio = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3');
-            audio.loop = true; audio.play();
+            audio.loop = true;
+            audio.volume = 0.5;
+            audio.play();
             document.getElementById('boot').style.opacity = '0';
             setTimeout(() => { document.getElementById('boot').remove(); init(); }, 800);
         };
@@ -47,15 +65,19 @@
         function init() {
             clock = new THREE.Clock();
             scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x8ecae6); 
-            // Thicker fog adds the "scale" feeling
-            scene.fog = new THREE.FogExp2(0xe2c391, 0.0003);
+            
+            // --- FIXED FOG LOGIC ---
+            // Using Linear Fog: Start clear for 3000 units, fade to sky color by 9000
+            const skyColor = 0x87CEEB;
+            scene.background = new THREE.Color(skyColor); 
+            scene.fog = new THREE.Fog(skyColor, 3000, 9000);
 
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-            camera.position.set(3000, 2000, 3000);
+            camera.position.set(3500, 2500, 3500);
 
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
             renderer.shadowMap.enabled = true;
             document.body.appendChild(renderer.domElement);
@@ -63,18 +85,18 @@
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
 
-            // Better Sun Position for deeper shadows
-            const sun = new THREE.DirectionalLight(0xfff5e1, 2.5);
-            sun.position.set(2000, 3000, 1000);
+            // --- STATIC DAYLIGHT ---
+            const sun = new THREE.DirectionalLight(0xffffff, 2.2);
+            sun.position.set(1500, 3500, 1000);
             sun.castShadow = true;
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
 
-            createCity();
+            createWorld();
             animate();
         }
 
-        function createCity() {
-            // Ground with "Sand" texture feel
+        function createWorld() {
+            // 1. DESERT FLOOR
             const floor = new THREE.Mesh(
                 new THREE.PlaneGeometry(20000, 20000),
                 new THREE.MeshStandardMaterial({ color: 0xd2b48c, roughness: 1 })
@@ -83,56 +105,83 @@
             floor.receiveShadow = true;
             scene.add(floor);
 
-            // MULTI-INSTANCING (Buildings + Ledges + Windows)
-            const count = 4500;
-            const mainMat = new THREE.MeshStandardMaterial({ color: 0xa89078 });
-            const detailMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+            // 2. TIGRIS RIVER (Blue Ring around the city)
+            const riverGeo = new THREE.RingGeometry(1900, 2300, 64);
+            const riverMat = new THREE.MeshStandardMaterial({ 
+                color: 0x0077be, 
+                metalness: 0.7, 
+                roughness: 0.2, 
+                transparent: true, 
+                opacity: 0.8 
+            });
+            river = new THREE.Mesh(riverGeo, riverMat);
+            river.rotation.x = -Math.PI / 2;
+            river.position.y = 5; 
+            scene.add(river);
 
+            // 3. BUILDINGS & LEDGES (Optimized)
+            const count = 4500;
             const bodyGeo = new THREE.BoxGeometry(1, 1, 1);
             const ledgeGeo = new THREE.BoxGeometry(1.1, 0.1, 1.1);
-
-            const cityMain = new THREE.InstancedMesh(bodyGeo, mainMat, count);
-            const cityLedges = new THREE.InstancedMesh(ledgeGeo, detailMat, count);
+            const cityMat = new THREE.MeshStandardMaterial({ color: 0xa89078 });
+            
+            const cityBody = new THREE.InstancedMesh(bodyGeo, cityMat, count);
+            const cityLedges = new THREE.InstancedMesh(ledgeGeo, cityMat, count);
             
             const dummy = new THREE.Object3D();
-
             for (let i = 0; i < count; i++) {
-                const r = 280 + Math.random() * 1100;
+                const r = 350 + Math.random() * 1300; // Stay inside river
                 const a = Math.random() * Math.PI * 2;
-                const h = 40 + Math.random() * 80;
-                const w = 25 + Math.random() * 20;
+                const h = 40 + Math.random() * 90;
+                const w = 30 + Math.random() * 15;
 
                 const x = Math.cos(a) * r;
                 const z = Math.sin(a) * r;
 
-                // Main Building Body
+                // Body
                 dummy.position.set(x, h/2, z);
                 dummy.scale.set(w, h, w);
                 dummy.updateMatrix();
-                cityMain.setMatrixAt(i, dummy.matrix);
+                cityBody.setMatrixAt(i, dummy.matrix);
 
-                // Add a "Roof Ledge" for architectural detail
+                // Ledge
                 dummy.position.set(x, h, z);
-                dummy.scale.set(w, 2, w); // Static ledge height
+                dummy.scale.set(w, 2, w);
                 dummy.updateMatrix();
                 cityLedges.setMatrixAt(i, dummy.matrix);
             }
-            scene.add(cityMain, cityLedges);
+            cityBody.castShadow = true;
+            cityBody.receiveShadow = true;
+            scene.add(cityBody, cityLedges);
 
-            // House of Wisdom - The "Centerpiece"
-            const palace = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(130, 140, 200, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-            const pDome = new THREE.Mesh(new THREE.SphereGeometry(130, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 0.9, roughness: 0.1}));
-            pDome.position.y = 100;
-            palace.add(pBase, pDome);
-            scene.add(palace);
+            // 4. HOUSE OF WISDOM (Center)
+            const center = new THREE.Group();
+            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(140, 150, 220, 16), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(
+                new THREE.SphereGeometry(140, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2), 
+                new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 1, roughness: 0.1})
+            );
+            pDome.position.y = 110;
+            center.add(pBase, pDome);
+            scene.add(center);
         }
 
         function animate() {
             requestAnimationFrame(animate);
+            const time = clock.getElapsedTime();
+
+            // Subtle River Shimmer
+            if(river) river.material.opacity = 0.7 + Math.sin(time) * 0.1;
+
             controls.update();
             renderer.render(scene, camera);
         }
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
     </script>
 </body>
 </html>
