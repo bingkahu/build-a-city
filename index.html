@@ -38,7 +38,7 @@
         #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
         
         #ui-layer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 10; }
-        .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; border: 1px solid var(--gold); color: var(--gold); background: rgba(0,0,0,0.7); }
+        .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
     </style>
 </head>
 <body>
@@ -52,29 +52,30 @@
     <div id="boot-sequence">
         <div class="intro-slide active">
             <h1>BAGHDAD</h1>
-            <p>Founded in 762 CE by Caliph Al-Mansur, this city became the "City of Peace." Its unique circular design was built to represent the center of the world.</p>
+            <p>Founded in 762 CE by Caliph Al-Mansur, this city became the "City of Peace." Its unique circular design represented the center of the world.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide">
             <h1>GOLDEN AGE</h1>
-            <p>During the Abbasid Caliphate, Baghdad was the global hub for science, medicine, and trade. Scholars traveled thousands of miles to study here.</p>
+            <p>Baghdad was the global hub for science, medicine, and trade. Scholars traveled thousands of miles to study here.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide">
             <h1>HOUSE OF WISDOM</h1>
-            <p>At the center of the city stood the Grand Library. It housed the world's knowledge, where ancient Greek and Indian texts were translated into Arabic.</p>
+            <p>At the center stood the Grand Library. It housed the world's knowledge and ancient texts translated into Arabic.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide">
             <h1>HAVE FUN!</h1>
-            <p>Explore the Round City. Click on any building to see who lives there or what secrets it holds. Look for the Golden Dome in the center.</p>
-            <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
+            <p>Explore the Round City. Click buildings to learn their history.</p>
+            <div style="margin-top: 20px; font-size: 0.9rem; color: #555; letter-spacing: 2px;">LEAD ARCHITECT: <span style="color:var(--gold)">MATTEO</span></div>
+            <button id="start-btn" onclick="startApp()" style="margin-top:20px;">BEGIN CHRONICLE</button>
         </div>
     </div>
 
     <div id="ui-layer">
-        <a href="#" class="ui-btn">LEAD ARCHITECT: [YOUR NAME]</a>
-        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ SOURCE CODE</a>
+        <a href="https://ko-fi.com/matteo44642" target="_blank" class="ui-btn">☕ SUPPORT ON KO-FI</a>
+        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
     </div>
 
     <script type="importmap">
@@ -85,19 +86,12 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, clock, cityBody, palaceGroup, raycaster, mouse;
+        let scene, camera, renderer, controls, clock, cityBody, detailsBody, palaceGroup, raycaster, mouse;
         let isCinematic = true;
 
-        const narratives = [
-            "A bustling merchant house where silk and spices from China are weighed and sold.",
-            "The home of a master astronomer who uses brass astrolabes to map the stars at night.",
-            "A small workshop filled with mulberry-paper scrolls ready for the Grand Library.",
-            "The residence of a royal scribe who translates ancient philosophy into Arabic.",
-            "A crowded apothecary shop smelling of dried herbs, saffron, and mountain snow.",
-            "A secure stone vault used by the Caliph's tax collectors to store gold dinars.",
-            "The villa of a veteran guard who protects the city's famous Golden Gate.",
-            "A quiet courtyard school where students practice calligraphy on wooden tablets."
-        ];
+        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of", "The Residence of", "The Scholarly Retreat of", "The Private Library of", "The Fragrant Shop of", "The Secure Vault of", "The School of", "The Villa of", "The Foundry of"];
+        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe", "a Paper Manufacturer", "a Greek Translator", "a Spice Merchant", "a Court Musician", "a Perfume Distiller", "a Wisdom Seeker", "a Veteran Guard", "a Calligrapher"];
+        const narratives = ["This building features high mud-brick walls and a deep wind-tower for natural cooling.", "The courtyard contains a rare mechanical fountain powered by hidden hydraulics.", "The roof is used for astrolabe celestial observations at midnight.", "Vats of indigo dye dominate the ground floor, scenting the entire street.", "Inside, mulberry-paper scrolls are being cataloged for the House of Wisdom.", "A secret underground cellar stores snow brought from the mountains.", "The walls are decorated with intricate geometric girih patterns.", "Casks of imported ink from China wait by the door.", "The balcony offers a view of the Golden Gate for state processions.", "Small clay pipes run through the walls for water distribution.", "Dried herbs hang from the rafters for the nearby Bimaristan.", "A heavy cedar door protects the valuable leather-bound books inside."];
 
         window.nextSlide = function() {
             const current = document.querySelector('.intro-slide.active');
@@ -144,41 +138,52 @@
         }
 
         function createCity() {
-            // Ground
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
-            // RIVER FIX: Increased thickness and height to 1.5 to prevent all clipping
-            const riverGeom = new THREE.CylinderGeometry(1350, 1350, 2, 64);
-            const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.6, roughness: 0.2 });
-            const river = new THREE.Mesh(riverGeom, riverMat);
-            river.position.y = 1; // Sits clearly above the sand
+            // Restored original river size to avoid "too much water"
+            const river = new THREE.Mesh(new THREE.RingGeometry(1150, 1300, 64), new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.5, roughness: 0.1 }));
+            river.rotation.x = -Math.PI / 2;
+            river.position.y = 0.5;
             scene.add(river);
 
-            // Buildings
-            const count = 3500;
-            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ color: 0x8b7355 }), count);
+            const count = 4000;
+            const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, count);
+            detailsBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1.1, 0.1, 1.1), cityMat, count); // Restored Roofs
+            
             const dummy = new THREE.Object3D();
             for (let i = 0; i < count; i++) {
-                const r = 250 + Math.random() * 800;
+                const r = 200 + Math.random() * 850;
                 const a = Math.random() * Math.PI * 2;
-                const h = 20 + Math.random() * 40;
-                const w = 15 + Math.random() * 10;
-                dummy.position.set(Math.cos(a) * r, h/2, Math.sin(a) * r);
+                const h = 20 + Math.random() * 50;
+                const w = 15 + Math.random() * 15;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+
+                dummy.position.set(x, h/2, z);
                 dummy.scale.set(w, h, w);
+                dummy.rotation.y = Math.random() * Math.PI;
                 dummy.updateMatrix();
                 cityBody.setMatrixAt(i, dummy.matrix);
-            }
-            scene.add(cityBody);
 
-            // HOUSE OF WISDOM (Palace)
+                // Add roofs back
+                dummy.position.y = h;
+                dummy.scale.set(w * 1.1, 2, w * 1.1);
+                dummy.updateMatrix();
+                detailsBody.setMatrixAt(i, dummy.matrix);
+            }
+            scene.add(cityBody, detailsBody);
+
+            // House of Wisdom updated to look like Mosque/Palace
             palaceGroup = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(100, 110, 80, 32), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-            const pDome = new THREE.Mesh(new THREE.SphereGeometry(90, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0xd4af37, metalness: 0.8, roughness: 0.2}));
+            const pBase = new THREE.Mesh(new THREE.BoxGeometry(180, 80, 180), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(70, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27, metalness: 0.5})); // Green Dome
             pDome.position.y = 40;
-            palaceGroup.add(pBase, pDome);
-            palaceGroup.name = "HouseOfWisdom"; // Named for the clicker
+            const pFinial = new THREE.Mesh(new THREE.CylinderGeometry(2, 2, 20), new THREE.MeshStandardMaterial({color: 0xd4af37}));
+            pFinial.position.y = 100;
+            palaceGroup.add(pBase, pDome, pFinial);
             scene.add(palaceGroup);
         }
 
@@ -187,18 +192,17 @@
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
 
-            // Check Palace first
-            const palaceHit = raycaster.intersectObject(palaceGroup, true);
-            if (palaceHit.length > 0) {
-                showCard("The House of Wisdom", "The scientific and intellectual heart of the city. It contains thousands of manuscripts and scholars from every corner of the known world.");
+            if (raycaster.intersectObject(palaceGroup, true).length > 0) {
+                showCard("The House of Wisdom", "The scientific heart of Baghdad. It housed thousands of scholars and ancient manuscripts from around the world.");
                 return;
             }
 
-            // Check Buildings
             const hits = raycaster.intersectObject(cityBody);
             if (hits.length > 0) {
                 const id = hits[0].instanceId;
-                showCard("City Structure " + (id + 100), narratives[id % narratives.length]);
+                // Restored full descriptive names
+                const title = prefixes[id % prefixes.length] + " " + owners[(id+7) % owners.length];
+                showCard(title, narratives[id % narratives.length]);
             }
         }
 
