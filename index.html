@@ -16,7 +16,6 @@
         .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
         .intro-slide p { color: #a89078; font-size: 1.2rem; margin-top: 20px; }
         
-        /* Credits Line */
         .dev-credit { margin-top: 40px; font-size: 0.9rem; color: #555; letter-spacing: 2px; }
 
         #start-btn { 
@@ -34,7 +33,7 @@
             color: var(--sand); padding: 25px; display: none; z-index: 50;
             backdrop-filter: blur(15px); transition: opacity 0.5s;
         }
-        #close-card { position: absolute; top: 10px; right: 10px; color: var(--gold); cursor: pointer; font-size: 1.5rem; line-height: 1; }
+        #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; line-height: 1; font-weight: bold; }
         #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); padding-right: 25px; }
         #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
         
@@ -88,7 +87,7 @@
         let currentSlide = 0;
 
         window.addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') {
+            if(e.key === 'Enter' || e.key === ' ') {
                 if(currentSlide < slides.length - 1) {
                     slides[currentSlide].classList.remove('active');
                     currentSlide++;
@@ -142,13 +141,18 @@
         }
 
         function createCity() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshStandardMaterial({ color: 0xcdb891 }));
+            // Ground Mesh
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
-            const river = new THREE.Mesh(new THREE.RingGeometry(1100, 1300, 64), new THREE.MeshStandardMaterial({ color: 0x0055ff, metalness: 0.8 }));
+            // FIXED RIVER: Lifted by 0.5 units to stop flickering
+            const river = new THREE.Mesh(
+                new THREE.RingGeometry(1150, 1350, 64), 
+                new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.5, roughness: 0.1, transparent: true, opacity: 0.8 })
+            );
             river.rotation.x = -Math.PI / 2;
-            river.position.y = 0.1;
+            river.position.y = 0.5; 
             scene.add(river);
 
             const count = 4000;
@@ -218,9 +222,9 @@
             if (isCinematic) {
                 camera.position.x = Math.cos(time * 0.2) * 2500;
                 camera.position.z = Math.sin(time * 0.2) * 2500;
-                camera.position.y -= 1.5;
+                if(camera.position.y > 600) camera.position.y -= 2; 
                 camera.lookAt(0, 0, 0);
-                if (time > 6) { isCinematic = false; controls.enabled = true; }
+                if (time > 10) { isCinematic = false; controls.enabled = true; }
             }
             controls.update();
             renderer.render(scene, camera);
