@@ -87,7 +87,6 @@
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
         let scene, camera, renderer, controls, clock, cityBody, detailsBody, palaceGroup, raycaster, mouse;
-        let isCinematic = true;
 
         const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of", "The Residence of", "The Scholarly Retreat of", "The Private Library of", "The Fragrant Shop of", "The Secure Vault of", "The School of", "The Villa of", "The Foundry of"];
         const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe", "a Paper Manufacturer", "a Greek Translator", "a Spice Merchant", "a Court Musician", "a Perfume Distiller", "a Wisdom Seeker", "a Veteran Guard", "a Calligrapher"];
@@ -104,19 +103,24 @@
 
         window.startApp = function() {
             document.getElementById('boot-sequence').style.opacity = '0';
-            setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1500);
+            setTimeout(() => { 
+                document.getElementById('boot-sequence').remove(); 
+                init(); 
+                controls.enabled = true; // Enabled immediately, no spin
+            }, 1500);
         };
 
         function init() {
             clock = new THREE.Clock();
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
-            scene.fog = new THREE.Fog(0x87CEEB, 2000, 8000);
+            scene.fog = new THREE.Fog(0x87CEEB, 2000, 10000);
 
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 15000);
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
             camera.position.set(2500, 1500, 2500);
 
-            renderer = new THREE.WebGLRenderer({ antialias: true });
+            // Logarithmic Depth Buffer added to kill Z-fighting permanently
+            renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
 
@@ -138,16 +142,17 @@
         }
 
         function createCity() {
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(10000, 10000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
+            floor.position.y = -2; // Slightly lowered ground to prevent overlap
             scene.add(floor);
 
-            // RIVER Z-FIGHT FIX: Switched to Cylinder with height to create a physical block above the ground
+            // River: Made thicker (Cylinder with height 10) and placed at y=0 to stop flicker
             const river = new THREE.Mesh(
-                new THREE.CylinderGeometry(1300, 1300, 2, 64, 1, true), 
+                new THREE.CylinderGeometry(1350, 1350, 10, 80, 1, true), 
                 new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.5, roughness: 0.1, side: THREE.DoubleSide })
             );
-            river.position.y = 1.0; 
+            river.position.y = 0; 
             scene.add(river);
 
             const count = 4000;
@@ -215,13 +220,6 @@
 
         function animate() {
             requestAnimationFrame(animate);
-            const time = clock.getElapsedTime();
-            if (isCinematic) {
-                camera.position.x = Math.cos(time * 0.15) * 2800;
-                camera.position.z = Math.sin(time * 0.15) * 2800;
-                camera.lookAt(0, 0, 0);
-                if (time > 12) { isCinematic = false; controls.enabled = true; }
-            }
             controls.update();
             renderer.render(scene, camera);
         }
