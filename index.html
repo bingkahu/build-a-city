@@ -78,6 +78,10 @@
         <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
     </div>
 
+    <audio id="ambient-audio" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
     <script type="importmap">
         { "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
     </script>
@@ -102,11 +106,15 @@
         };
 
         window.startApp = function() {
+            // FIXED AUDIO TRIGGER
+            const audio = document.getElementById('ambient-audio');
+            audio.play().catch(() => console.log("Audio needs interaction"));
+            
             document.getElementById('boot-sequence').style.opacity = '0';
             setTimeout(() => { 
                 document.getElementById('boot-sequence').remove(); 
                 init(); 
-                controls.enabled = true; // Enabled immediately, no spin
+                controls.enabled = true; 
             }, 1500);
         };
 
@@ -119,7 +127,7 @@
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
             camera.position.set(2500, 1500, 2500);
 
-            // Logarithmic Depth Buffer added to kill Z-fighting permanently
+            // LOGARITHMIC DEPTH BUFFER STOPS Z-FIGHTING
             renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
@@ -144,15 +152,16 @@
         function createCity() {
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
-            floor.position.y = -2; // Slightly lowered ground to prevent overlap
+            floor.position.y = -10; 
             scene.add(floor);
 
-            // River: Made thicker (Cylinder with height 10) and placed at y=0 to stop flicker
+            // THICK RIVER: Used Torus with larger tube radius to ensure visibility and prevent flickering
             const river = new THREE.Mesh(
-                new THREE.CylinderGeometry(1350, 1350, 10, 80, 1, true), 
-                new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.5, roughness: 0.1, side: THREE.DoubleSide })
+                new THREE.TorusGeometry(1300, 60, 16, 100), 
+                new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.5, roughness: 0.1 })
             );
-            river.position.y = 0; 
+            river.rotation.x = Math.PI / 2;
+            river.position.y = -20; 
             scene.add(river);
 
             const count = 4000;
