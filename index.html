@@ -52,21 +52,21 @@
     <div id="boot-sequence">
         <div class="intro-slide active" id="slide-0">
             <h1>BAGHDAD</h1>
-            <p>Founded in 762 CE by Caliph Al-Mansur. (Press ENTER to continue)</p>
+            <p>Founded in 762 CE by Caliph Al-Mansur. (Enter to Continue)</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide" id="slide-1">
             <h1>GOLDEN AGE</h1>
-            <p>The global hub for science and trade.</p>
+            <p>The global hub for science, medicine, and trade. Scholars traveled thousands of miles to study here.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide" id="slide-2">
             <h1>HOUSE OF WISDOM</h1>
-            <p>The center of knowledge.</p>
+            <p>At the center stood the Grand Library. It housed the world's knowledge and ancient texts translated into Arabic.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide" id="slide-3">
-            <h1>READY?</h1>
+            <h1>HAVE FUN!</h1>
             <p>LEAD ARCHITECT: <span style="color:var(--gold)">MATTEO</span></p>
             <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
         </div>
@@ -77,8 +77,8 @@
         <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
     </div>
 
-    <audio id="ambient-audio" loop>
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg">
     </audio>
 
     <script type="importmap">
@@ -89,13 +89,17 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, clock, cityBody, detailsBody, palaceGroup, raycaster, mouse;
+        let scene, camera, renderer, controls, cityBody, detailsBody, palaceGroup, raycaster, mouse;
 
-        // Intro Key Listener
+        // --- RESTORED DATA ---
+        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of", "The Residence of", "The Scholarly Retreat of", "The Private Library of", "The Fragrant Shop of", "The Secure Vault of", "The School of", "The Villa of", "The Foundry of"];
+        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe", "a Paper Manufacturer", "a Greek Translator", "a Spice Merchant", "a Court Musician", "a Perfume Distiller", "a Wisdom Seeker", "a Veteran Guard", "a Calligrapher"];
+        const narratives = ["This building features high mud-brick walls and a deep wind-tower for natural cooling.", "The courtyard contains a rare mechanical fountain powered by hidden hydraulics.", "The roof is used for astrolabe celestial observations at midnight.", "Vats of indigo dye dominate the ground floor, scenting the entire street.", "Inside, mulberry-paper scrolls are being cataloged for the House of Wisdom.", "A secret underground cellar stores snow brought from the mountains.", "The walls are decorated with intricate geometric girih patterns.", "Casks of imported ink from China wait by the door.", "The balcony offers a view of the Golden Gate for state processions.", "Small clay pipes run through the walls for water distribution.", "Dried herbs hang from the rafters for the nearby Bimaristan.", "A heavy cedar door protects the valuable leather-bound books inside."];
+
         window.addEventListener('keydown', (e) => {
             if (e.key === "Enter") {
                 const current = document.querySelector('.intro-slide.active');
-                if (current.id === "slide-3") {
+                if (current && current.id === "slide-3") {
                     startApp();
                 } else {
                     nextSlide();
@@ -105,7 +109,7 @@
 
         window.nextSlide = function() {
             const current = document.querySelector('.intro-slide.active');
-            const next = current.nextElementSibling;
+            const next = current?.nextElementSibling;
             if (next && next.classList.contains('intro-slide')) {
                 current.classList.remove('active');
                 next.classList.add('active');
@@ -113,8 +117,8 @@
         };
 
         window.startApp = function() {
-            const audio = document.getElementById('ambient-audio');
-            audio.play().catch(() => {});
+            const music = document.getElementById('bg-music');
+            music.play().catch(() => {});
             document.getElementById('boot-sequence').style.opacity = '0';
             setTimeout(() => { 
                 document.getElementById('boot-sequence').remove(); 
@@ -149,20 +153,18 @@
         }
 
         function createCity() {
-            // Ground
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
-            floor.position.y = -1; 
+            floor.position.y = -0.5; 
             scene.add(floor);
 
-            // FLAT RIVER (NO TUBES): Box with thickness of 2 prevents Z-fighting but stays flat
-            const riverGeom = new THREE.CylinderGeometry(1400, 1400, 2, 64);
-            const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.2, roughness: 0.3 });
+            // FLAT RIVER (Corrected: Flat but visible, no Z-fighting)
+            const riverGeom = new THREE.CylinderGeometry(1400, 1400, 0.2, 64);
+            const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, metalness: 0.1, roughness: 0.5 });
             const river = new THREE.Mesh(riverGeom, riverMat);
-            river.position.y = 0; 
+            river.position.y = 0.05; 
             scene.add(river);
 
-            // Buildings
             const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
             cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
             detailsBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1.1, 0.1, 1.1), cityMat, 4000);
@@ -183,7 +185,6 @@
             }
             scene.add(cityBody, detailsBody);
 
-            // Center Palace
             palaceGroup = new THREE.Group();
             const pBase = new THREE.Mesh(new THREE.BoxGeometry(180, 80, 180), new THREE.MeshStandardMaterial({color: 0x9c8263}));
             const pDome = new THREE.Mesh(new THREE.SphereGeometry(70, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
@@ -196,11 +197,17 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
+
             if (raycaster.intersectObject(palaceGroup, true).length > 0) {
-                showCard("The House of Wisdom", "Scientific heart of Baghdad.");
-            } else {
-                const hits = raycaster.intersectObject(cityBody);
-                if (hits.length > 0) showCard("Residence", "A house in the Round City.");
+                showCard("The House of Wisdom", "The scientific and intellectual heart of the city. It contains thousands of manuscripts and scholars from every corner of the known world.");
+                return;
+            }
+
+            const hits = raycaster.intersectObject(cityBody);
+            if (hits.length > 0) {
+                const id = hits[0].instanceId;
+                const title = prefixes[id % prefixes.length] + " " + owners[(id+7) % owners.length];
+                showCard(title, narratives[id % narratives.length]);
             }
         }
 
