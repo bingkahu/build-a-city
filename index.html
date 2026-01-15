@@ -37,7 +37,13 @@
         #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); }
         #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
         
-        #ui-layer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: space-between; padding: 0 20px; box-sizing: border-box; pointer-events: none; z-index: 10; }
+        #map-scale-container {
+            position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20;
+        }
+        #scale-label { color: var(--gold); font-size: 0.75rem; margin-bottom: 4px; font-weight: bold; }
+        #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 60px; }
+
+        #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
         .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
     </style>
 </head>
@@ -52,29 +58,23 @@
     <div id="boot-sequence">
         <div class="intro-slide active" id="slide-0">
             <h1>BAGHDAD</h1>
-            <p>Founded in 762 CE by Caliph Al-Mansur. (Enter to Continue)</p>
-            <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
-        </div>
-        <div class="intro-slide" id="slide-1">
-            <h1>GOLDEN AGE</h1>
-            <p>The global hub for science, medicine, and trade. Scholars traveled thousands of miles to study here.</p>
-            <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
-        </div>
-        <div class="intro-slide" id="slide-2">
-            <h1>HOUSE OF WISDOM</h1>
-            <p>At the center stood the Grand Library. It housed the world's knowledge and ancient texts translated into Arabic.</p>
+            <p>The Round City of Peace, 8th Century CE. (Enter to Continue)</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide" id="slide-3">
-            <h1>HAVE FUN!</h1>
-            <p>LEAD ARCHITECT: <span style="color:var(--gold)">MATTEO</span></p>
+            <h1>EXPLORE</h1>
+            <p>Lead Architect: <span style="color:var(--gold)">MATTEO</span></p>
             <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
         </div>
     </div>
 
+    <div id="map-scale-container">
+        <div id="scale-label">1:100</div>
+        <div id="scale-bracket"></div>
+    </div>
+
     <div id="ui-layer">
-        <a href="https://ko-fi.com/matteo44642" target="_blank" class="ui-btn">☕ SUPPORT ON KO-FI</a>
-        <a href="https://github.com/bingkahu/build-a-city" target="_blank" class="ui-btn">⭐ STAR ON GITHUB</a>
+        <a href="#" class="ui-btn">VIEW MAP</a>
     </div>
 
     <audio id="bg-music" loop>
@@ -90,21 +90,14 @@
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
         let scene, camera, renderer, controls, cityBody, detailsBody, palaceGroup, raycaster, mouse;
+        const mosques = [];
 
-        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of", "The Residence of", "The Scholarly Retreat of", "The Private Library of", "The Fragrant Shop of", "The Secure Vault of", "The School of", "The Villa of", "The Foundry of"];
-        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe", "a Paper Manufacturer", "a Greek Translator", "a Spice Merchant", "a Court Musician", "a Perfume Distiller", "a Wisdom Seeker", "a Veteran Guard", "a Calligrapher"];
-        const narratives = ["This building features high mud-brick walls and a deep wind-tower for natural cooling.", "The courtyard contains a rare mechanical fountain powered by hidden hydraulics.", "The roof is used for astrolabe celestial observations at midnight.", "Vats of indigo dye dominate the ground floor, scenting the entire street.", "Inside, mulberry-paper scrolls are being cataloged for the House of Wisdom.", "A secret underground cellar stores snow brought from the mountains.", "The walls are decorated with intricate geometric girih patterns.", "Casks of imported ink from China wait by the door.", "The balcony offers a view of the Golden Gate for state processions.", "Small clay pipes run through the walls for water distribution.", "Dried herbs hang from the rafters for the nearby Bimaristan.", "A heavy cedar door protects the valuable leather-bound books inside."];
+        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of"];
+        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe"];
+        const narratives = ["Features high mud-brick walls and a deep wind-tower.", "The courtyard contains a rare mechanical fountain.", "The roof is used for celestial observations."];
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key === "Enter") {
-                const current = document.querySelector('.intro-slide.active');
-                if (current && current.id === "slide-3") {
-                    startApp();
-                } else {
-                    nextSlide();
-                }
-            }
-        });
+        const mosqueNames = ["The Great Mosque of Al-Mansur", "Friday Mosque", "The Turquoise Sanctuary", "The Al-Khulafa Mosque", "Oratory of the Scholars"];
+        const mosqueLore = ["The muezzin's call echoes from the minaret.", "A center for theological debate.", "Paved with cool marble.", "The dome is clad in green glazed tiles.", "Scholars rest here after study."];
 
         window.nextSlide = function() {
             const current = document.querySelector('.intro-slide.active');
@@ -116,21 +109,16 @@
         };
 
         window.startApp = function() {
-            const music = document.getElementById('bg-music');
-            music.play().catch(() => {});
+            document.getElementById('bg-music').play().catch(() => {});
             document.getElementById('boot-sequence').style.opacity = '0';
-            setTimeout(() => { 
-                document.getElementById('boot-sequence').remove(); 
-                init(); 
-                controls.enabled = true; 
-            }, 1000);
+            setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1000);
         };
 
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
-            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 20000);
-            camera.position.set(2500, 1500, 2500);
+            camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
+            camera.position.set(2000, 1200, 2000);
 
             renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -154,37 +142,64 @@
         function createCity() {
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
-            floor.position.y = -0.1; 
             scene.add(floor);
 
-            // FIXED RIVER: Now a narrow ring that doesn't overlap the buildings
-            const riverGeom = new THREE.RingGeometry(1150, 1300, 64);
-            const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, side: THREE.DoubleSide });
-            const river = new THREE.Mesh(riverGeom, riverMat);
-            river.rotation.x = -Math.PI / 2;
-            river.position.y = 0.05; // Offset to stop Z-fighting
-            scene.add(river);
-
+            const mosquePositions = [];
             const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
-            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
-            detailsBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1.1, 0.1, 1.1), cityMat, 4000);
-            const dummy = new THREE.Object3D();
-            for (let i = 0; i < 4000; i++) {
-                // Buildings stay within the radius of 1050 so they don't drown
-                const r = 250 + Math.random() * 800;
-                const a = Math.random() * Math.PI * 2;
-                const h = 20 + Math.random() * 50;
-                const w = 15 + Math.random() * 15;
-                dummy.position.set(Math.cos(a) * r, h/2, Math.sin(a) * r);
-                dummy.scale.set(w, h, w);
-                dummy.updateMatrix();
-                cityBody.setMatrixAt(i, dummy.matrix);
-                dummy.position.y = h;
-                dummy.scale.set(w * 1.1, 2, w * 1.1);
-                dummy.updateMatrix();
-                detailsBody.setMatrixAt(i, dummy.matrix);
+
+            // 1. Create 5 Mosques
+            for (let i = 0; i < 5; i++) {
+                const r = 400 + Math.random() * 500;
+                const a = (i / 5) * Math.PI * 2;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+                
+                const mosqueGroup = new THREE.Group();
+                const mBase = new THREE.Mesh(new THREE.BoxGeometry(40, 30, 40), cityMat);
+                const mDome = new THREE.Mesh(new THREE.SphereGeometry(18, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
+                mDome.position.y = 15;
+                
+                const minaret = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60), cityMat);
+                minaret.position.set(15, 20, 15);
+                
+                mosqueGroup.add(mBase, mDome, minaret);
+                mosqueGroup.position.set(x, 0, z);
+                mosqueGroup.userData = { isMosque: true, title: mosqueNames[i], desc: mosqueLore[i] };
+                scene.add(mosqueGroup);
+                mosques.push(mosqueGroup);
+                mosquePositions.push({x, z, radius: 70});
             }
-            scene.add(cityBody, detailsBody);
+
+            // 2. Instanced Buildings with Color Variation
+            cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
+            const dummy = new THREE.Object3D();
+            let count = 0;
+
+            for (let i = 0; i < 4000; i++) {
+                const r = 250 + Math.random() * 1000;
+                const a = Math.random() * Math.PI * 2;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+
+                let overlap = false;
+                for (let pos of mosquePositions) {
+                    if (Math.sqrt((x-pos.x)**2 + (z-pos.z)**2) < pos.radius) { overlap = true; break; }
+                }
+
+                if (!overlap) {
+                    const h = 15 + Math.random() * 40;
+                    const w = 15 + Math.random() * 10;
+                    dummy.position.set(x, h/2, z);
+                    dummy.scale.set(w, h, w);
+                    dummy.updateMatrix();
+                    cityBody.setMatrixAt(count, dummy.matrix);
+                    
+                    const shade = 0.8 + Math.random() * 0.2;
+                    cityBody.setColorAt(count, new THREE.Color(shade, shade * 0.9, shade * 0.8));
+                    count++;
+                }
+            }
+            scene.add(cityBody);
 
             palaceGroup = new THREE.Group();
             const pBase = new THREE.Mesh(new THREE.BoxGeometry(180, 80, 180), new THREE.MeshStandardMaterial({color: 0x9c8263}));
@@ -192,6 +207,12 @@
             pDome.position.y = 40;
             palaceGroup.add(pBase, pDome);
             scene.add(palaceGroup);
+        }
+
+        function updateScale() {
+            const dist = camera.position.distanceTo(controls.target);
+            const ratio = Math.round(dist / 2);
+            document.getElementById('scale-label').innerText = `1:${ratio}`;
         }
 
         function onClick(event) {
@@ -204,24 +225,30 @@
                 return;
             }
 
+            for (let mosque of mosques) {
+                if (raycaster.intersectObject(mosque, true).length > 0) {
+                    showCard(mosque.userData.title, mosque.userData.desc);
+                    return;
+                }
+            }
+
             const hits = raycaster.intersectObject(cityBody);
             if (hits.length > 0) {
                 const id = hits[0].instanceId;
-                const title = prefixes[id % prefixes.length] + " " + owners[(id+7) % owners.length];
-                showCard(title, narratives[id % narratives.length]);
+                showCard(prefixes[id % 4] + " " + owners[id % 4], narratives[id % 3]);
             }
         }
 
         function showCard(title, text) {
-            const card = document.getElementById('building-card');
             document.getElementById('card-title').innerText = title;
             document.getElementById('card-desc').innerText = text;
-            card.style.display = 'block';
+            document.getElementById('building-card').style.display = 'block';
         }
 
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
+            updateScale();
             renderer.render(scene, camera);
         }
     </script>
