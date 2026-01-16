@@ -9,61 +9,78 @@
         :root { --gold: #d4af37; --sand: #f4e4bc; --bg: #0b0a09; }
         body { margin: 0; overflow: hidden; background: var(--bg); font-family: 'Cinzel', serif; }
         
-        /* Full Multi-Slide Intro */
+        /* Intro Sequence */
         #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg); z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
-        .intro-slide { opacity: 0; position: absolute; transition: opacity 0.5s; max-width: 800px; display: none; flex-direction: column; align-items: center; top: 20%; }
+        .intro-slide { opacity: 0; position: absolute; transition: opacity 0.5s; max-width: 800px; display: none; flex-direction: column; align-items: center; top: 25%; }
         .intro-slide.active { opacity: 1; display: flex; }
-        .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3.5rem; margin: 0; }
-        .intro-slide p { color: #a89078; font-size: 1.2rem; margin: 25px 0; line-height: 1.8; max-width: 650px; }
+        .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
+        .intro-slide p { color: #a89078; font-size: 1.1rem; margin: 20px 0; line-height: 1.6; }
         
         .continue-btn, #start-btn { 
-            padding: 14px 35px; background: none; border: 1px solid var(--gold); color: var(--gold); 
-            cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; letter-spacing: 3px;
+            padding: 12px 30px; background: none; border: 1px solid var(--gold); color: var(--gold); 
+            cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; letter-spacing: 2px;
         }
-        .continue-btn:hover, #start-btn:hover { background: var(--gold); color: black; box-shadow: 0 0 20px var(--gold); }
-        .dev-credit { margin-top: 50px; font-size: 0.85rem; letter-spacing: 5px; color: var(--gold); opacity: 0.9; font-weight: bold; }
+        .continue-btn:hover, #start-btn:hover { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
+        .dev-credit { margin-top: 40px; font-size: 0.8rem; letter-spacing: 4px; color: var(--gold); opacity: 0.8; font-weight: bold; }
 
-        /* UI Elements */
-        #building-card {
-            position: fixed; top: 25px; right: 25px; width: 320px;
-            background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold);
-            color: var(--sand); padding: 25px; display: none; z-index: 50; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        /* Map Overlay */
+        #map-overlay {
+            position: fixed; inset: 0; background: rgba(11, 10, 9, 0.98);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 200; backdrop-filter: blur(10px);
         }
-        #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; }
-        #map-scale-container { position: fixed; bottom: 25px; left: 25px; pointer-events: none; z-index: 20; }
-        #scale-label { color: var(--gold); font-size: 0.75rem; font-weight: bold; }
-        #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 70px; }
+        #pixel-canvas { border: 2px solid var(--gold); background: #12110f; image-rendering: pixelated; cursor: crosshair; }
+        #map-info-box { margin-top: 15px; width: 500px; text-align: center; height: 80px; }
+        #map-info-title { color: var(--gold); font-size: 1.2rem; margin: 0; letter-spacing: 2px; }
+        #map-info-text { color: #888; font-size: 0.9rem; margin-top: 5px; }
+
+        /* General UI */
+        #building-card {
+            position: fixed; top: 20px; right: 20px; width: 300px;
+            background: rgba(11, 10, 9, 0.9); border: 1px solid var(--gold);
+            color: var(--sand); padding: 20px; display: none; z-index: 50;
+        }
+        #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.5rem; }
+        #map-scale-container { position: fixed; bottom: 20px; left: 20px; pointer-events: none; z-index: 20; }
+        #scale-label { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
+        #scale-bracket { height: 6px; border: 2px solid var(--gold); border-top: none; width: 60px; }
+        #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
+        .ui-btn { pointer-events: all; font-size: 0.7rem; padding: 10px 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; }
     </style>
 </head>
 <body>
 
+    <div id="map-overlay">
+        <h2 style="color: var(--gold); letter-spacing: 5px;">CARTOGRAPHIC RECORD</h2>
+        <canvas id="pixel-canvas" width="500" height="500"></canvas>
+        <div id="map-info-box">
+            <p id="map-info-title">SELECT A LANDMARK</p>
+            <p id="map-info-text">Identify the gates and palaces of the Round City.</p>
+        </div>
+        <button class="continue-btn" onclick="toggleMap()">RETURN TO 3D</button>
+    </div>
+
     <div id="building-card">
         <div id="close-card">×</div>
-        <h2 id="card-title" style="color: var(--gold); margin:0; font-size: 1.2rem;">Structure</h2>
-        <hr style="border: 0.5px solid #444; margin: 15px 0;">
-        <p id="card-desc" style="font-size: 0.9rem; color: #ccc; line-height: 1.5;"></p>
+        <h2 id="card-title" style="color: var(--gold); font-size: 1rem; margin:0;">Structure</h2>
+        <p id="card-desc" style="font-size: 0.85rem; color: #ccc;"></p>
     </div>
 
     <div id="boot-sequence">
         <div class="intro-slide active">
             <h1>BAGHDAD</h1>
-            <p>The year is 762 CE. Under the decree of Caliph Al-Mansur, the most perfect city in history is born on the banks of the Tigris.</p>
+            <p>762 CE. The Abbasid Caliphate establishes the center of the world.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide">
-            <h1>MADINAT AL-SALAM</h1>
-            <p>The "City of Peace." A masterpiece of circular geometry, designed by the greatest astronomers and mathematicians of the age.</p>
-            <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
-        </div>
-        <div class="intro-slide">
-            <h1>GOLDEN AGE</h1>
-            <p>From the House of Wisdom to the four mighty gates, explore the center of the world's knowledge and trade.</p>
+            <h1>THE ROUND CITY</h1>
+            <p>Designed with mathematical precision, protected by the Tigris and four mighty gates.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide">
             <h1>BEGIN</h1>
             <p>Have fun! And begin.</p>
-            <button id="start-btn" onclick="startApp()">START CHRONICLE</button>
+            <button id="start-btn" onclick="startApp()">START SIMULATION</button>
             <div class="dev-credit">LEAD ARCHITECT: MATTEO</div>
         </div>
     </div>
@@ -73,6 +90,14 @@
         <div id="scale-bracket"></div>
     </div>
 
+    <div id="ui-layer">
+        <div class="ui-btn" onclick="toggleMap()">VIEW PIXEL MAP</div>
+    </div>
+
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg">
+    </audio>
+
     <script type="importmap">
         { "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
     </script>
@@ -81,9 +106,16 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, cityBody, raycaster, mouse;
-        const landmarks = [];
+        let scene, camera, renderer, controls, cityBody, palaceGroup, raycaster, mouse;
         const exclusionZones = []; 
+
+        const mapFeatures = [
+            { name: "BAB AL-SHAM", x: 250, y: 70, r: 20, desc: "The Syrian Gate. Connects the city to the northern trade routes." },
+            { name: "BAB AL-KUFA", x: 250, y: 430, r: 20, desc: "The Kufa Gate. Gateway to the holy cities of the south." },
+            { name: "BAB AL-BASRA", x: 70, y: 250, r: 20, desc: "The Basra Gate. Flowing with goods from the Persian Gulf." },
+            { name: "BAB AL-KHURASAN", x: 430, y: 250, r: 20, desc: "The Khurasan Gate. The entry point of the Silk Road." },
+            { name: "HOUSE OF WISDOM", x: 250, y: 250, r: 40, desc: "The scientific and intellectual heart of the Islamic Golden Age." }
+        ];
 
         window.nextSlide = function() {
             const current = document.querySelector('.intro-slide.active');
@@ -95,15 +127,46 @@
         };
 
         window.startApp = function() {
+            document.getElementById('bg-music').play().catch(() => {});
             document.getElementById('boot-sequence').style.opacity = '0';
             setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1000);
         };
+
+        window.toggleMap = function() {
+            const overlay = document.getElementById('map-overlay');
+            const isOpening = overlay.style.display !== 'flex';
+            overlay.style.display = isOpening ? 'flex' : 'none';
+            if (isOpening) drawPixelMap();
+        };
+
+        function drawPixelMap() {
+            const canvas = document.getElementById('pixel-canvas');
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = "#12110f"; ctx.fillRect(0, 0, 500, 500);
+            ctx.strokeStyle = "#2a2825"; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.arc(250, 250, 180, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.arc(250, 250, 60, 0, Math.PI * 2); ctx.stroke();
+            mapFeatures.forEach(f => {
+                ctx.fillStyle = f.name.includes("HOUSE") ? "#2d5a27" : "#d4af37";
+                ctx.beginPath(); ctx.arc(f.x, f.y, 8, 0, Math.PI * 2); ctx.fill();
+            });
+            canvas.onclick = (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const mx = e.clientX - rect.left, my = e.clientY - rect.top;
+                mapFeatures.forEach(f => {
+                    if (Math.sqrt((mx-f.x)**2 + (my-f.y)**2) < f.r) {
+                        document.getElementById('map-info-title').innerText = f.name;
+                        document.getElementById('map-info-text').innerText = f.desc;
+                    }
+                });
+            };
+        }
 
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
-            camera.position.set(2000, 1400, 2000);
+            camera.position.set(1800, 1200, 1800);
 
             renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -114,9 +177,9 @@
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
 
-            const sun = new THREE.DirectionalLight(0xffffff, 1.8);
-            sun.position.set(1000, 1500, 1000);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
+            const sun = new THREE.DirectionalLight(0xffffff, 2);
+            sun.position.set(500, 1000, 500);
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
 
             createWorld();
             window.addEventListener('click', onClick);
@@ -126,73 +189,55 @@
 
         function createWorld() {
             const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
-            const domeMat = new THREE.MeshStandardMaterial({ color: 0x2d5a27 });
 
-            // Ground
-            const floor = new THREE.Mesh(new THREE.PlaneGeometry(15000, 15000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
+            // Floor Plane
+            const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
-            // Tigris River
-            const riverGeom = new THREE.RingGeometry(2000, 2400, 128, 1, 0, Math.PI * 1.2);
+            // Tigris River - Set to y=0.1 to avoid Z-fighting with floor
+            const riverGeom = new THREE.RingGeometry(1550, 1800, 64);
             const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, side: THREE.DoubleSide });
             const river = new THREE.Mesh(riverGeom, riverMat);
             river.rotation.x = -Math.PI / 2;
-            river.position.y = 0.5;
+            river.position.y = 0.1; 
             scene.add(river);
-            exclusionZones.push({ x: 0, z: 0, rMin: 1950, rMax: 2450, isRiver: true });
+            exclusionZones.push({ x: 0, z: 0, rMin: 1530, rMax: 1820, isRiver: true });
 
-            // 4 Gates
-            const gateData = [
-                {x:0, z:-1100, name: "Syrian Gate (Bab al-Sham)", desc: "Guarding the northwest, this gate connected Baghdad to the silk roads of the Levant."},
-                {x:0, z:1100, name: "Kufa Gate (Bab al-Kufa)", desc: "The southern gateway leading toward the holy city of Kufa and the Arabian Peninsula."},
-                {x:-1100, z:0, name: "Basra Gate (Bab al-Basra)", desc: "The primary entry for trade goods flowing up from the Persian Gulf via the port of Basra."},
-                {x:1100, z:0, name: "Khurasan Gate (Bab al-Khurasan)", desc: "Facing the Tigris, this gate served as the main entry for travelers from Persia and the East."}
-            ];
-            gateData.forEach(data => {
-                const gate = new THREE.Mesh(new THREE.BoxGeometry(200, 150, 200), cityMat);
-                gate.position.set(data.x, 75, data.z);
-                gate.userData = { title: data.name, desc: data.desc };
+            // Gates
+            const gates = [{x:0,z:-1000},{x:0,z:1000},{x:-1000,z:0},{x:1000,z:0}];
+            gates.forEach(g => {
+                const gate = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), cityMat);
+                gate.position.set(g.x, 60, g.z);
                 scene.add(gate);
-                landmarks.push(gate);
-                exclusionZones.push({ x: data.x, z: data.z, r: 250 });
+                exclusionZones.push({ x: g.x, z: g.z, r: 150 });
             });
 
-            // House of Wisdom
-            const howBase = new THREE.Mesh(new THREE.BoxGeometry(320, 130, 320), cityMat);
-            const howDome = new THREE.Mesh(new THREE.SphereGeometry(110, 32, 16, 0, Math.PI*2, 0, Math.PI/2), domeMat);
-            howDome.position.y = 65;
-            const howGroup = new THREE.Group();
-            howGroup.add(howBase, howDome);
-            howGroup.userData = { title: "House of Wisdom (Bayt al-Hikma)", desc: "The intellectual heart of the Golden Age, where the world's knowledge was translated, preserved, and expanded." };
-            scene.add(howGroup);
-            landmarks.push(howBase); // Click detection on base
-            exclusionZones.push({ x: 0, z: 0, r: 450 });
+            // Palace
+            palaceGroup = new THREE.Group();
+            const pBase = new THREE.Mesh(new THREE.BoxGeometry(220, 100, 220), cityMat);
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
+            pDome.position.y = 50;
+            palaceGroup.add(pBase, pDome);
+            scene.add(palaceGroup);
+            exclusionZones.push({ x: 0, z: 0, r: 300 });
 
-            // Mosques
+            // 5 Mosques
             for (let i = 0; i < 5; i++) {
-                const a = (i / 5) * Math.PI * 2, r = 700 + Math.random() * 300;
+                const a = (i / 5) * Math.PI * 2, r = 500 + Math.random() * 300;
                 const x = Math.cos(a)*r, z = Math.sin(a)*r;
-                const mBase = new THREE.Mesh(new THREE.BoxGeometry(100, 60, 100), cityMat);
-                const mDome = new THREE.Mesh(new THREE.SphereGeometry(45, 32, 16, 0, Math.PI*2, 0, Math.PI/2), domeMat);
-                mDome.position.y = 30;
-                const minaret = new THREE.Mesh(new THREE.CylinderGeometry(10, 10, 140), cityMat);
-                minaret.position.set(45, 70, 45);
-                const mGroup = new THREE.Group();
-                mGroup.add(mBase, mDome, minaret);
-                mGroup.position.set(x, 0, z);
-                mGroup.userData = { title: "Grand Mosque", desc: "A place of worship and community, reflecting the architectural beauty of the Abbasid Caliphate." };
-                scene.add(mGroup);
-                landmarks.push(mBase); 
-                exclusionZones.push({ x, z, r: 200 });
+                const mosque = new THREE.Mesh(new THREE.BoxGeometry(80, 60, 80), cityMat);
+                mosque.position.set(x, 30, z);
+                scene.add(mosque);
+                exclusionZones.push({ x, z, r: 120 });
             }
 
-            // Residential Buildings
+            // City Buildings
             cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
             const dummy = new THREE.Object3D();
             let count = 0;
-            for (let i = 0; i < 15000 && count < 4000; i++) {
-                const distR = 320 + Math.random() * 1100, ang = Math.random() * Math.PI * 2;
+            for (let i = 0; i < 12000 && count < 4000; i++) {
+                const distR = 250 + Math.random() * 1150, ang = Math.random() * Math.PI * 2;
                 const x = Math.cos(ang) * distR, z = Math.sin(ang) * distR;
                 let safe = true;
                 for (let zne of exclusionZones) {
@@ -202,11 +247,11 @@
                     } else if (Math.sqrt((x-zne.x)**2 + (z-zne.z)**2) < zne.r) safe = false;
                 }
                 if (safe) {
-                    const h = 20 + Math.random() * 50, w = 15 + Math.random() * 20;
+                    const h = 20 + Math.random() * 50, w = 15 + Math.random() * 15;
                     dummy.position.set(x, h/2, z); dummy.scale.set(w, h, w); dummy.updateMatrix();
                     cityBody.setMatrixAt(count, dummy.matrix);
                     const shd = 0.7 + Math.random() * 0.3;
-                    cityBody.setColorAt(count, new THREE.Color(shd, shd * 0.92, shd * 0.85));
+                    cityBody.setColorAt(count, new THREE.Color(shd, shd * 0.9, shd * 0.8));
                     count++;
                 }
             }
@@ -217,24 +262,11 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-
-            const landmarkIntersects = raycaster.intersectObjects(landmarks);
-            if (landmarkIntersects.length > 0) {
-                const data = landmarkIntersects[0].object.userData.title ? landmarkIntersects[0].object.userData : landmarkIntersects[0].object.parent.userData;
-                showCard(data.title, data.desc);
-                return;
+            if (raycaster.intersectObject(cityBody).length > 0) {
+                document.getElementById('card-title').innerText = "Abbasid District";
+                document.getElementById('card-desc').innerText = "One of thousands of mud-brick structures housing the city's scholars and merchants.";
+                document.getElementById('building-card').style.display = 'block';
             }
-
-            const cityIntersects = raycaster.intersectObject(cityBody);
-            if (cityIntersects.length > 0) {
-                showCard("Residential District", "A cluster of Abbasid dwellings housing the merchants and citizens of the Round City.");
-            }
-        }
-
-        function showCard(title, desc) {
-            document.getElementById('card-title').innerText = title.toUpperCase();
-            document.getElementById('card-desc').innerText = desc.toUpperCase();
-            document.getElementById('building-card').style.display = 'block';
         }
 
         function animate() {
