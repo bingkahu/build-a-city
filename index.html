@@ -6,82 +6,65 @@
     <title>Baghdad: The Great Round City</title>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #d4af37; --sand: #f4e4bc; --bg: #0b0a09; }
-        body { margin: 0; overflow: hidden; background: var(--bg); font-family: 'Cinzel', serif; }
+        :root { --gold: #d4af37; --sand: #f4e4bc; }
+        body { margin: 0; overflow: hidden; background: #0b0a09; font-family: 'Cinzel', serif; }
         
-        /* Intro Sequence */
-        #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: var(--bg); z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
+        #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0a09; z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
         .intro-slide { opacity: 0; position: absolute; transition: opacity 0.5s; max-width: 800px; display: none; flex-direction: column; align-items: center; top: 25%; }
         .intro-slide.active { opacity: 1; display: flex; }
         .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
-        .intro-slide p { color: #a89078; font-size: 1.1rem; margin: 20px 0; line-height: 1.6; }
+        .intro-slide p { color: #a89078; font-size: 1.2rem; margin: 20px 0; line-height: 1.6; }
         
-        .continue-btn, #start-btn { 
-            padding: 12px 30px; background: none; border: 1px solid var(--gold); color: var(--gold); 
-            cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; letter-spacing: 2px;
+        .continue-btn { 
+            padding: 10px 25px; background: none; border: 1px solid var(--gold); color: var(--gold); 
+            cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s;
         }
-        .continue-btn:hover, #start-btn:hover { background: var(--gold); color: black; box-shadow: 0 0 15px var(--gold); }
-        .dev-credit { margin-top: 40px; font-size: 0.8rem; letter-spacing: 4px; color: var(--gold); opacity: 0.8; font-weight: bold; }
+        .continue-btn:hover { background: var(--gold); color: black; }
 
-        /* Map Overlay */
-        #map-overlay {
-            position: fixed; inset: 0; background: rgba(11, 10, 9, 0.98);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 200; backdrop-filter: blur(10px);
+        #start-btn { 
+            padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); 
+            cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; letter-spacing: 3px;
         }
-        #pixel-canvas { border: 2px solid var(--gold); background: #12110f; image-rendering: pixelated; cursor: crosshair; }
-        #map-info-box { margin-top: 15px; width: 500px; text-align: center; height: 80px; }
-        #map-info-title { color: var(--gold); font-size: 1.2rem; margin: 0; letter-spacing: 2px; }
-        #map-info-text { color: #888; font-size: 0.9rem; margin-top: 5px; }
+        #start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
 
-        /* General UI */
         #building-card {
-            position: fixed; top: 20px; right: 20px; width: 300px;
-            background: rgba(11, 10, 9, 0.9); border: 1px solid var(--gold);
-            color: var(--sand); padding: 20px; display: none; z-index: 50;
+            position: fixed; top: 20px; right: 20px; width: 320px;
+            background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold);
+            color: var(--sand); padding: 25px; display: none; z-index: 50;
+            backdrop-filter: blur(15px); transition: opacity 0.5s;
         }
-        #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.5rem; }
-        #map-scale-container { position: fixed; bottom: 20px; left: 20px; pointer-events: none; z-index: 20; }
-        #scale-label { color: var(--gold); font-size: 0.7rem; font-weight: bold; }
-        #scale-bracket { height: 6px; border: 2px solid var(--gold); border-top: none; width: 60px; }
+        #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; }
+        #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); }
+        #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
+        
+        #map-scale-container {
+            position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20;
+        }
+        #scale-label { color: var(--gold); font-size: 0.75rem; margin-bottom: 4px; font-weight: bold; }
+        #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 60px; }
+
         #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
-        .ui-btn { pointer-events: all; font-size: 0.7rem; padding: 10px 15px; background: rgba(0,0,0,0.8); border: 1px solid var(--gold); color: var(--gold); cursor: pointer; }
+        .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
     </style>
 </head>
 <body>
 
-    <div id="map-overlay">
-        <h2 style="color: var(--gold); letter-spacing: 5px;">CARTOGRAPHIC RECORD</h2>
-        <canvas id="pixel-canvas" width="500" height="500"></canvas>
-        <div id="map-info-box">
-            <p id="map-info-title">SELECT A LANDMARK</p>
-            <p id="map-info-text">Identify the gates and palaces of the Round City.</p>
-        </div>
-        <button class="continue-btn" onclick="toggleMap()">RETURN TO 3D</button>
-    </div>
-
     <div id="building-card">
         <div id="close-card">×</div>
-        <h2 id="card-title" style="color: var(--gold); font-size: 1rem; margin:0;">Structure</h2>
-        <p id="card-desc" style="font-size: 0.85rem; color: #ccc;"></p>
+        <h2 id="card-title">Structure Found</h2>
+        <p id="card-desc">Investigating records...</p>
     </div>
 
     <div id="boot-sequence">
-        <div class="intro-slide active">
+        <div class="intro-slide active" id="slide-0">
             <h1>BAGHDAD</h1>
-            <p>762 CE. The Abbasid Caliphate establishes the center of the world.</p>
+            <p>The Round City of Peace, 8th Century CE. (Enter to Continue)</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
-        <div class="intro-slide">
-            <h1>THE ROUND CITY</h1>
-            <p>Designed with mathematical precision, protected by the Tigris and four mighty gates.</p>
-            <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
-        </div>
-        <div class="intro-slide">
-            <h1>BEGIN</h1>
-            <p>Have fun! And begin.</p>
-            <button id="start-btn" onclick="startApp()">START SIMULATION</button>
-            <div class="dev-credit">LEAD ARCHITECT: MATTEO</div>
+        <div class="intro-slide" id="slide-3">
+            <h1>EXPLORE</h1>
+            <p>Lead Architect: <span style="color:var(--gold)">MATTEO</span></p>
+            <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
         </div>
     </div>
 
@@ -91,7 +74,7 @@
     </div>
 
     <div id="ui-layer">
-        <div class="ui-btn" onclick="toggleMap()">VIEW PIXEL MAP</div>
+        <a href="#" class="ui-btn">VIEW MAP</a>
     </div>
 
     <audio id="bg-music" loop>
@@ -106,20 +89,19 @@
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, cityBody, palaceGroup, raycaster, mouse;
-        const exclusionZones = []; 
+        let scene, camera, renderer, controls, cityBody, detailsBody, palaceGroup, raycaster, mouse;
+        const mosques = [];
 
-        const mapFeatures = [
-            { name: "BAB AL-SHAM", x: 250, y: 70, r: 20, desc: "The Syrian Gate. Connects the city to the northern trade routes." },
-            { name: "BAB AL-KUFA", x: 250, y: 430, r: 20, desc: "The Kufa Gate. Gateway to the holy cities of the south." },
-            { name: "BAB AL-BASRA", x: 70, y: 250, r: 20, desc: "The Basra Gate. Flowing with goods from the Persian Gulf." },
-            { name: "BAB AL-KHURASAN", x: 430, y: 250, r: 20, desc: "The Khurasan Gate. The entry point of the Silk Road." },
-            { name: "HOUSE OF WISDOM", x: 250, y: 250, r: 40, desc: "The scientific and intellectual heart of the Islamic Golden Age." }
-        ];
+        const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of"];
+        const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe"];
+        const narratives = ["Features high mud-brick walls and a deep wind-tower.", "The courtyard contains a rare mechanical fountain.", "The roof is used for celestial observations."];
+
+        const mosqueNames = ["The Great Mosque of Al-Mansur", "Friday Mosque", "The Turquoise Sanctuary", "The Al-Khulafa Mosque", "Oratory of the Scholars"];
+        const mosqueLore = ["The muezzin's call echoes from the minaret.", "A center for theological debate.", "Paved with cool marble.", "The dome is clad in green glazed tiles.", "Scholars rest here after study."];
 
         window.nextSlide = function() {
             const current = document.querySelector('.intro-slide.active');
-            const next = current.nextElementSibling;
+            const next = current?.nextElementSibling;
             if (next && next.classList.contains('intro-slide')) {
                 current.classList.remove('active');
                 next.classList.add('active');
@@ -132,41 +114,11 @@
             setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1000);
         };
 
-        window.toggleMap = function() {
-            const overlay = document.getElementById('map-overlay');
-            const isOpening = overlay.style.display !== 'flex';
-            overlay.style.display = isOpening ? 'flex' : 'none';
-            if (isOpening) drawPixelMap();
-        };
-
-        function drawPixelMap() {
-            const canvas = document.getElementById('pixel-canvas');
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = "#12110f"; ctx.fillRect(0, 0, 500, 500);
-            ctx.strokeStyle = "#2a2825"; ctx.lineWidth = 2;
-            ctx.beginPath(); ctx.arc(250, 250, 180, 0, Math.PI * 2); ctx.stroke();
-            ctx.beginPath(); ctx.arc(250, 250, 60, 0, Math.PI * 2); ctx.stroke();
-            mapFeatures.forEach(f => {
-                ctx.fillStyle = f.name.includes("HOUSE") ? "#2d5a27" : "#d4af37";
-                ctx.beginPath(); ctx.arc(f.x, f.y, 8, 0, Math.PI * 2); ctx.fill();
-            });
-            canvas.onclick = (e) => {
-                const rect = canvas.getBoundingClientRect();
-                const mx = e.clientX - rect.left, my = e.clientY - rect.top;
-                mapFeatures.forEach(f => {
-                    if (Math.sqrt((mx-f.x)**2 + (my-f.y)**2) < f.r) {
-                        document.getElementById('map-info-title').innerText = f.name;
-                        document.getElementById('map-info-text').innerText = f.desc;
-                    }
-                });
-            };
-        }
-
         function init() {
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
-            camera.position.set(1800, 1200, 1800);
+            camera.position.set(2000, 1200, 2000);
 
             renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
@@ -179,101 +131,124 @@
 
             const sun = new THREE.DirectionalLight(0xffffff, 2);
             sun.position.set(500, 1000, 500);
-            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.6));
+            scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
 
-            createWorld();
+            createCity();
             window.addEventListener('click', onClick);
             document.getElementById('close-card').onclick = () => { document.getElementById('building-card').style.display = 'none'; };
             animate();
         }
 
-        function createWorld() {
-            const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
-
-            // Floor Plane
+        function createCity() {
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
 
-            // Tigris River - Set to y=0.1 to avoid Z-fighting with floor
-            const riverGeom = new THREE.RingGeometry(1550, 1800, 64);
-            const riverMat = new THREE.MeshStandardMaterial({ color: 0x1a4a8a, side: THREE.DoubleSide });
-            const river = new THREE.Mesh(riverGeom, riverMat);
-            river.rotation.x = -Math.PI / 2;
-            river.position.y = 0.1; 
-            scene.add(river);
-            exclusionZones.push({ x: 0, z: 0, rMin: 1530, rMax: 1820, isRiver: true });
+            const mosquePositions = [];
+            const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
 
-            // Gates
-            const gates = [{x:0,z:-1000},{x:0,z:1000},{x:-1000,z:0},{x:1000,z:0}];
-            gates.forEach(g => {
-                const gate = new THREE.Mesh(new THREE.BoxGeometry(120, 120, 120), cityMat);
-                gate.position.set(g.x, 60, g.z);
-                scene.add(gate);
-                exclusionZones.push({ x: g.x, z: g.z, r: 150 });
-            });
-
-            // Palace
-            palaceGroup = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.BoxGeometry(220, 100, 220), cityMat);
-            const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, Math.PI*2, 0, Math.PI/2), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
-            pDome.position.y = 50;
-            palaceGroup.add(pBase, pDome);
-            scene.add(palaceGroup);
-            exclusionZones.push({ x: 0, z: 0, r: 300 });
-
-            // 5 Mosques
+            // 1. Create 5 Mosques
             for (let i = 0; i < 5; i++) {
-                const a = (i / 5) * Math.PI * 2, r = 500 + Math.random() * 300;
-                const x = Math.cos(a)*r, z = Math.sin(a)*r;
-                const mosque = new THREE.Mesh(new THREE.BoxGeometry(80, 60, 80), cityMat);
-                mosque.position.set(x, 30, z);
-                scene.add(mosque);
-                exclusionZones.push({ x, z, r: 120 });
+                const r = 400 + Math.random() * 500;
+                const a = (i / 5) * Math.PI * 2;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+                
+                const mosqueGroup = new THREE.Group();
+                const mBase = new THREE.Mesh(new THREE.BoxGeometry(40, 30, 40), cityMat);
+                const mDome = new THREE.Mesh(new THREE.SphereGeometry(18, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
+                mDome.position.y = 15;
+                
+                const minaret = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60), cityMat);
+                minaret.position.set(15, 20, 15);
+                
+                mosqueGroup.add(mBase, mDome, minaret);
+                mosqueGroup.position.set(x, 0, z);
+                mosqueGroup.userData = { isMosque: true, title: mosqueNames[i], desc: mosqueLore[i] };
+                scene.add(mosqueGroup);
+                mosques.push(mosqueGroup);
+                mosquePositions.push({x, z, radius: 70});
             }
 
-            // City Buildings
+            // 2. Instanced Buildings with Color Variation
             cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
             const dummy = new THREE.Object3D();
             let count = 0;
-            for (let i = 0; i < 12000 && count < 4000; i++) {
-                const distR = 250 + Math.random() * 1150, ang = Math.random() * Math.PI * 2;
-                const x = Math.cos(ang) * distR, z = Math.sin(ang) * distR;
-                let safe = true;
-                for (let zne of exclusionZones) {
-                    if (zne.isRiver) {
-                        const rC = Math.sqrt(x*x + z*z);
-                        if (rC > zne.rMin && rC < zne.rMax) safe = false;
-                    } else if (Math.sqrt((x-zne.x)**2 + (z-zne.z)**2) < zne.r) safe = false;
+
+            for (let i = 0; i < 4000; i++) {
+                const r = 250 + Math.random() * 1000;
+                const a = Math.random() * Math.PI * 2;
+                const x = Math.cos(a) * r;
+                const z = Math.sin(a) * r;
+
+                let overlap = false;
+                for (let pos of mosquePositions) {
+                    if (Math.sqrt((x-pos.x)**2 + (z-pos.z)**2) < pos.radius) { overlap = true; break; }
                 }
-                if (safe) {
-                    const h = 20 + Math.random() * 50, w = 15 + Math.random() * 15;
-                    dummy.position.set(x, h/2, z); dummy.scale.set(w, h, w); dummy.updateMatrix();
+
+                if (!overlap) {
+                    const h = 15 + Math.random() * 40;
+                    const w = 15 + Math.random() * 10;
+                    dummy.position.set(x, h/2, z);
+                    dummy.scale.set(w, h, w);
+                    dummy.updateMatrix();
                     cityBody.setMatrixAt(count, dummy.matrix);
-                    const shd = 0.7 + Math.random() * 0.3;
-                    cityBody.setColorAt(count, new THREE.Color(shd, shd * 0.9, shd * 0.8));
+                    
+                    const shade = 0.8 + Math.random() * 0.2;
+                    cityBody.setColorAt(count, new THREE.Color(shade, shade * 0.9, shade * 0.8));
                     count++;
                 }
             }
             scene.add(cityBody);
+
+            palaceGroup = new THREE.Group();
+            const pBase = new THREE.Mesh(new THREE.BoxGeometry(180, 80, 180), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(70, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
+            pDome.position.y = 40;
+            palaceGroup.add(pBase, pDome);
+            scene.add(palaceGroup);
+        }
+
+        function updateScale() {
+            const dist = camera.position.distanceTo(controls.target);
+            const ratio = Math.round(dist / 2);
+            document.getElementById('scale-label').innerText = `1:${ratio}`;
         }
 
         function onClick(event) {
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-            if (raycaster.intersectObject(cityBody).length > 0) {
-                document.getElementById('card-title').innerText = "Abbasid District";
-                document.getElementById('card-desc').innerText = "One of thousands of mud-brick structures housing the city's scholars and merchants.";
-                document.getElementById('building-card').style.display = 'block';
+
+            if (raycaster.intersectObject(palaceGroup, true).length > 0) {
+                showCard("The House of Wisdom", "The scientific and intellectual heart of the city.");
+                return;
             }
+
+            for (let mosque of mosques) {
+                if (raycaster.intersectObject(mosque, true).length > 0) {
+                    showCard(mosque.userData.title, mosque.userData.desc);
+                    return;
+                }
+            }
+
+            const hits = raycaster.intersectObject(cityBody);
+            if (hits.length > 0) {
+                const id = hits[0].instanceId;
+                showCard(prefixes[id % 4] + " " + owners[id % 4], narratives[id % 3]);
+            }
+        }
+
+        function showCard(title, text) {
+            document.getElementById('card-title').innerText = title;
+            document.getElementById('card-desc').innerText = text;
+            document.getElementById('building-card').style.display = 'block';
         }
 
         function animate() {
             requestAnimationFrame(animate);
             controls.update();
-            const d = camera.position.distanceTo(controls.target);
-            document.getElementById('scale-label').innerText = `1:${Math.round(d / 2.5)}`;
+            updateScale();
             renderer.render(scene, camera);
         }
     </script>
