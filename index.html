@@ -15,34 +15,19 @@
         .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
         .intro-slide p { color: #a89078; font-size: 1.2rem; margin: 20px 0; line-height: 1.6; }
         
-        .continue-btn { 
-            padding: 10px 25px; background: none; border: 1px solid var(--gold); color: var(--gold); 
-            cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s;
-        }
+        .continue-btn { padding: 10px 25px; background: none; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; }
         .continue-btn:hover { background: var(--gold); color: black; }
-
-        #start-btn { 
-            padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); 
-            cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; letter-spacing: 3px;
-        }
+        #start-btn { padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; letter-spacing: 3px; }
         #start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
 
-        #building-card {
-            position: fixed; top: 20px; right: 20px; width: 320px;
-            background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold);
-            color: var(--sand); padding: 25px; display: none; z-index: 50;
-            backdrop-filter: blur(15px); transition: opacity 0.5s;
-        }
+        #building-card { position: fixed; top: 20px; right: 20px; width: 320px; background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold); color: var(--sand); padding: 25px; display: none; z-index: 50; backdrop-filter: blur(15px); transition: opacity 0.5s; }
         #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; }
         #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); }
         #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
         
-        #map-scale-container {
-            position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20;
-        }
+        #map-scale-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20; }
         #scale-label { color: var(--gold); font-size: 0.75rem; margin-bottom: 4px; font-weight: bold; }
         #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 60px; }
-
         #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
         .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
     </style>
@@ -58,7 +43,7 @@
     <div id="boot-sequence">
         <div class="intro-slide active" id="slide-0">
             <h1>BAGHDAD</h1>
-            <p>The Round City of Peace, 8th Century CE. (Enter to Continue)</p>
+            <p>The Round City of Peace, 8th Century CE.</p>
             <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
         </div>
         <div class="intro-slide" id="slide-3">
@@ -73,29 +58,21 @@
         <div id="scale-bracket"></div>
     </div>
 
-    <div id="ui-layer">
-        <a href="#" class="ui-btn">VIEW MAP</a>
-    </div>
+    <div id="ui-layer"><a href="#" class="ui-btn">VIEW MAP</a></div>
 
-    <audio id="bg-music" loop>
-        <source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg">
-    </audio>
+    <audio id="bg-music" loop><source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg"></audio>
 
-    <script type="importmap">
-        { "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
-    </script>
-
+    <script type="importmap"> { "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } } </script>
     <script type="module">
         import * as THREE from 'three';
         import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
 
-        let scene, camera, renderer, controls, cityBody, detailsBody, palaceGroup, raycaster, mouse;
+        let scene, camera, renderer, controls, cityBody, palaceGroup, raycaster, mouse;
         const mosques = [];
-
+        const gates = [];
         const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of"];
         const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe"];
         const narratives = ["Features high mud-brick walls and a deep wind-tower.", "The courtyard contains a rare mechanical fountain.", "The roof is used for celestial observations."];
-
         const mosqueNames = ["The Great Mosque of Al-Mansur", "Friday Mosque", "The Turquoise Sanctuary", "The Al-Khulafa Mosque", "Oratory of the Scholars"];
         const mosqueLore = ["The muezzin's call echoes from the minaret.", "A center for theological debate.", "Paved with cool marble.", "The dome is clad in green glazed tiles.", "Scholars rest here after study."];
 
@@ -118,21 +95,17 @@
             scene = new THREE.Scene();
             scene.background = new THREE.Color(0x87CEEB);
             camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
-            camera.position.set(2000, 1200, 2000);
-
+            camera.position.set(2200, 1500, 2200);
             renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
             document.body.appendChild(renderer.domElement);
-
             controls = new OrbitControls(camera, renderer.domElement);
             controls.enableDamping = true;
             raycaster = new THREE.Raycaster();
             mouse = new THREE.Vector2();
-
             const sun = new THREE.DirectionalLight(0xffffff, 2);
             sun.position.set(500, 1000, 500);
             scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
-
             createCity();
             window.addEventListener('click', onClick);
             document.getElementById('close-card').onclick = () => { document.getElementById('building-card').style.display = 'none'; };
@@ -143,75 +116,89 @@
             const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
             floor.rotation.x = -Math.PI / 2;
             scene.add(floor);
-
-            const mosquePositions = [];
             const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+            const wallMat = new THREE.MeshStandardMaterial({ color: 0x6b5335 });
 
-            // 1. Create 5 Mosques
+            // Circular Walls
+            const createWall = (radius, height, width) => {
+                const wall = new THREE.Mesh(new THREE.TorusGeometry(radius, width, 16, 100), wallMat);
+                wall.rotation.x = Math.PI / 2;
+                wall.position.y = height / 2;
+                scene.add(wall);
+            };
+            createWall(1500, 60, 20); 
+            createWall(600, 80, 15);
+
+            // Mosques
+            const mosquePositions = [];
             for (let i = 0; i < 5; i++) {
-                const r = 400 + Math.random() * 500;
+                const r = 750 + Math.random() * 400;
                 const a = (i / 5) * Math.PI * 2;
                 const x = Math.cos(a) * r;
                 const z = Math.sin(a) * r;
-                
                 const mosqueGroup = new THREE.Group();
-                const mBase = new THREE.Mesh(new THREE.BoxGeometry(40, 30, 40), cityMat);
-                const mDome = new THREE.Mesh(new THREE.SphereGeometry(18, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
-                mDome.position.y = 15;
-                
-                const minaret = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 60), cityMat);
-                minaret.position.set(15, 20, 15);
-                
+                const mBase = new THREE.Mesh(new THREE.BoxGeometry(45, 35, 45), cityMat);
+                const mDome = new THREE.Mesh(new THREE.SphereGeometry(20, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
+                mDome.position.y = 17;
+                const minaret = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 70), cityMat);
+                minaret.position.set(18, 25, 18);
                 mosqueGroup.add(mBase, mDome, minaret);
                 mosqueGroup.position.set(x, 0, z);
-                mosqueGroup.userData = { isMosque: true, title: mosqueNames[i], desc: mosqueLore[i] };
+                mosqueGroup.userData = { title: mosqueNames[i], desc: mosqueLore[i] };
                 scene.add(mosqueGroup);
                 mosques.push(mosqueGroup);
-                mosquePositions.push({x, z, radius: 70});
+                mosquePositions.push({x, z, radius: 90});
             }
 
-            // 2. Instanced Buildings with Color Variation
+            // Gates
+            const gateNames = ["Kufa Gate", "Basra Gate", "Khurasan Gate", "Syrian Gate"];
+            const gateAngles = [Math.PI / 2, 0, Math.PI, -Math.PI / 2];
+            gateAngles.forEach((angle, i) => {
+                const x = Math.cos(angle) * 1500;
+                const z = Math.sin(angle) * 1500;
+                const gateMesh = new THREE.Mesh(new THREE.BoxGeometry(80, 120, 80), wallMat);
+                gateMesh.position.set(x, 60, z);
+                gateMesh.userData = { title: gateNames[i], desc: "One of the four grand entrances to the Round City." };
+                scene.add(gateMesh);
+                gates.push(gateMesh);
+            });
+
+            // Residential Districts
             cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
             const dummy = new THREE.Object3D();
             let count = 0;
-
             for (let i = 0; i < 4000; i++) {
-                const r = 250 + Math.random() * 1000;
+                const r = 680 + Math.random() * 750;
                 const a = Math.random() * Math.PI * 2;
+                if (Math.abs(a % (Math.PI / 2)) < 0.15) continue; // Gate roads
                 const x = Math.cos(a) * r;
                 const z = Math.sin(a) * r;
-
-                let overlap = false;
-                for (let pos of mosquePositions) {
-                    if (Math.sqrt((x-pos.x)**2 + (z-pos.z)**2) < pos.radius) { overlap = true; break; }
-                }
-
-                if (!overlap) {
-                    const h = 15 + Math.random() * 40;
-                    const w = 15 + Math.random() * 10;
+                let overlap = mosquePositions.some(p => Math.sqrt((x-p.x)**2 + (z-p.z)**2) < p.radius);
+                if (!overlap && count < 4000) {
+                    const h = 20 + Math.random() * 40;
+                    const w = 15 + Math.random() * 15;
                     dummy.position.set(x, h/2, z);
+                    dummy.rotation.y = -a;
                     dummy.scale.set(w, h, w);
                     dummy.updateMatrix();
                     cityBody.setMatrixAt(count, dummy.matrix);
-                    
-                    const shade = 0.8 + Math.random() * 0.2;
-                    cityBody.setColorAt(count, new THREE.Color(shade, shade * 0.9, shade * 0.8));
+                    const s = 0.7 + Math.random() * 0.3;
+                    cityBody.setColorAt(count, new THREE.Color(s, s * 0.9, s * 0.8));
                     count++;
                 }
             }
             scene.add(cityBody);
 
             palaceGroup = new THREE.Group();
-            const pBase = new THREE.Mesh(new THREE.BoxGeometry(180, 80, 180), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-            const pDome = new THREE.Mesh(new THREE.SphereGeometry(70, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
-            pDome.position.y = 40;
+            const pBase = new THREE.Mesh(new THREE.CylinderGeometry(120, 120, 90, 32), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+            const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
+            pDome.position.y = 45;
             palaceGroup.add(pBase, pDome);
             scene.add(palaceGroup);
         }
 
         function updateScale() {
-            const dist = camera.position.distanceTo(controls.target);
-            const ratio = Math.round(dist / 2);
+            const ratio = Math.round(camera.position.distanceTo(controls.target) / 2);
             document.getElementById('scale-label').innerText = `1:${ratio}`;
         }
 
@@ -219,19 +206,17 @@
             mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
             mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
             raycaster.setFromCamera(mouse, camera);
-
-            if (raycaster.intersectObject(palaceGroup, true).length > 0) {
-                showCard("The House of Wisdom", "The scientific and intellectual heart of the city.");
-                return;
-            }
-
-            for (let mosque of mosques) {
-                if (raycaster.intersectObject(mosque, true).length > 0) {
-                    showCard(mosque.userData.title, mosque.userData.desc);
-                    return;
+            const check = (arr) => {
+                for (let obj of arr) {
+                    if (raycaster.intersectObject(obj, true).length > 0) {
+                        showCard(obj.userData.title, obj.userData.desc);
+                        return true;
+                    }
                 }
-            }
-
+                return false;
+            };
+            if (raycaster.intersectObject(palaceGroup, true).length > 0) return showCard("The House of Wisdom", "The scientific heart of the city.");
+            if (check(mosques) || check(gates)) return;
             const hits = raycaster.intersectObject(cityBody);
             if (hits.length > 0) {
                 const id = hits[0].instanceId;
