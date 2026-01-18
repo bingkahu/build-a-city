@@ -1,701 +1,391 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<!-- Default Statcounter code for Build A City
-https://bingkahu.github.io/build-a-city/# -->
-<script type="text/javascript">
-var sc_project=13198625; 
-var sc_invisible=1; 
-var sc_security="add2d3ce"; 
-</script>
-<script type="text/javascript"
-src="https://www.statcounter.com/counter/counter.js" async></script>
-<noscript><div class="statcounter"><a title="Web Analytics"
-href="https://statcounter.com/" target="_blank"><img class="statcounter"
-src="https://c.statcounter.com/13198625/0/add2d3ce/1/" alt="Web Analytics"
-referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
-<!-- End of Statcounter Code -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Baghdad: The Great Round City</title>
-<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  :root { --gold: #d4af37; --sand: #f4e4bc; }
-  body { margin: 0; overflow: hidden; background: #0b0a09; font-family: 'Cinzel', serif; }
-  
-  #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0a09; z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
-  .intro-slide { opacity: 0; position: absolute; transition: opacity 0.5s; max-width: 800px; display: none; flex-direction: column; align-items: center; top: 25%; }
-  .intro-slide.active { opacity: 1; display: flex; }
-  .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
-  .intro-slide p { color: #a89078; font-size: 1.2rem; margin: 20px 0; line-height: 1.6; }
-  
-  .continue-btn { padding: 10px 25px; background: none; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; }
-  .continue-btn:hover { background: var(--gold); color: black; }
-  #start-btn { padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; letter-spacing: 3px; }
-  #start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+  <!-- Default Statcounter code for Build A City -->
+  <script type="text/javascript">
+  var sc_project=13198625; 
+  var sc_invisible=1; 
+  var sc_security="add2d3ce"; 
+  </script>
+  <script type="text/javascript"
+  src="https://www.statcounter.com/counter/counter.js" async></script>
+  <noscript><div class="statcounter"><a title="Web Analytics"
+  href="https://statcounter.com/" target="_blank"><img class="statcounter"
+  src="https://c.statcounter.com/13198625/0/add2d3ce/1/" alt="Web Analytics"
+  referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+  <!-- End of Statcounter Code -->
 
-  #building-card { position: fixed; top: 20px; right: 20px; width: 320px; background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold); color: var(--sand); padding: 25px; display: none; z-index: 50; backdrop-filter: blur(15px); transition: opacity 0.5s; }
-  #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; }
-  #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); }
-  #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
-  
-  #map-scale-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20; }
-  #scale-label { color: var(--gold); font-size: 0.75rem; margin-bottom: 4px; font-weight: bold; }
-  #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 60px; }
-  #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
-  .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baghdad: The Great Round City</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root { --gold: #d4af37; --sand: #f4e4bc; }
+    body { margin: 0; overflow: hidden; background: #0b0a09; font-family: 'Cinzel', serif; }
+
+    #boot-sequence { position: fixed; inset: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #0b0a09; z-index: 100; transition: opacity 1.5s; color: white; text-align: center; padding: 20px; }
+    .intro-slide { opacity: 0; position: absolute; transition: opacity 0.5s; max-width: 800px; display: none; flex-direction: column; align-items: center; top: 25%; }
+    .intro-slide.active { opacity: 1; display: flex; }
+    .intro-slide h1 { color: var(--gold); letter-spacing: 15px; font-size: 3rem; margin: 0; }
+    .intro-slide p { color: #a89078; font-size: 1.2rem; margin: 20px 0; line-height: 1.6; }
+
+    .continue-btn { padding: 10px 25px; background: none; border: 1px solid var(--gold); color: var(--gold); cursor: pointer; font-family: 'Cinzel'; margin-top: 20px; transition: 0.3s; }
+    .continue-btn:hover { background: var(--gold); color: black; }
+    #start-btn { padding: 15px 40px; background: none; border: 2px solid var(--gold); color: var(--gold); cursor: pointer; transition: 0.3s; font-family: 'Cinzel'; letter-spacing: 3px; }
+    #start-btn:hover { background: var(--gold); color: #000; box-shadow: 0 0 20px var(--gold); }
+
+    #building-card { position: fixed; top: 20px; right: 20px; width: 320px; background: rgba(11, 10, 9, 0.95); border: 1px solid var(--gold); color: var(--sand); padding: 25px; display: none; z-index: 50; backdrop-filter: blur(15px); transition: opacity 0.5s; }
+    #close-card { position: absolute; top: 10px; right: 15px; color: var(--gold); cursor: pointer; font-size: 1.8rem; }
+    #building-card h2 { color: var(--gold); margin: 0 0 10px 0; font-size: 1.1rem; border-bottom: 1px solid rgba(212,175,55,0.3); }
+    #building-card p { font-size: 0.95rem; line-height: 1.6; color: #ccc; }
+
+    #map-scale-container { position: fixed; bottom: 20px; left: 20px; display: flex; flex-direction: column; align-items: flex-start; pointer-events: none; z-index: 20; }
+    #scale-label { color: var(--gold); font-size: 0.75rem; margin-bottom: 4px; font-weight: bold; }
+    #scale-bracket { height: 8px; border: 2px solid var(--gold); border-top: none; width: 60px; }
+
+    #ui-layer { position: fixed; bottom: 20px; right: 20px; display: flex; gap: 10px; pointer-events: none; z-index: 10; }
+    .ui-btn { pointer-events: all; text-decoration: none; font-size: 0.75rem; padding: 10px 18px; background: rgba(0,0,0,0.7); border: 1px solid var(--gold); color: var(--gold); }
+  </style>
 </head>
 <body>
 
-<div id="building-card">
-  <div id="close-card">×</div>
-  <h2 id="card-title">Structure Found</h2>
-  <p id="card-desc">Investigating records...</p>
-</div>
-
-<div id="boot-sequence">
-  <div class="intro-slide active" id="slide-0">
-    <h1>BAGHDAD</h1>
-    <p>The Round City of Peace, 8th Century CE.</p>
-    <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
+  <div id="building-card">
+    <div id="close-card">×</div>
+    <h2 id="card-title">Structure Found</h2>
+    <p id="card-desc">Investigating records...</p>
   </div>
-  <div class="intro-slide" id="slide-3">
-    <h1>EXPLORE</h1>
-    <p>Lead Architect: <span style="color:var(--gold)">MATTEO</span></p>
-    <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
+
+  <div id="boot-sequence">
+    <div class="intro-slide active" id="slide-0">
+      <h1>BAGHDAD</h1>
+      <p>The Round City of Peace, 8th Century CE.</p>
+      <button class="continue-btn" onclick="nextSlide()">CONTINUE</button>
+    </div>
+    <div class="intro-slide" id="slide-3">
+      <h1>EXPLORE</h1>
+      <p>Lead Architect: <span style="color:var(--gold)">MATTEO</span></p>
+      <button id="start-btn" onclick="startApp()">BEGIN CHRONICLE</button>
+    </div>
   </div>
-</div>
 
-<div id="map-scale-container">
-  <div id="scale-label">1:100</div>
-  <div id="scale-bracket"></div>
-</div>
+  <div id="map-scale-container">
+    <div id="scale-label">1:100</div>
+    <div id="scale-bracket"></div>
+  </div>
 
-<div id="ui-layer"><a href="#" class="ui-btn">VIEW MAP</a></div>
+  <div id="ui-layer"><a href="#" class="ui-btn">VIEW MAP</a></div>
 
-<audio id="bg-music" loop><source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg"></audio>
-
-<script type="importmap">
-{ "imports": { "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js" } }
-</script>
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js';
-
-/* =========================
-   Graphics Engine (insane)
-   ========================= */
-class GraphicsEngine {
-  constructor({ renderer, scene, camera, options = {} }) {
-    this.renderer = renderer;
-    this.scene = scene;
-    this.camera = camera;
-
-    this.opts = Object.assign({
-      resolutionScale: 1.0,
-      bloom: { strength: 1.35, threshold: 0.86, radius: 0.6 },
-      ssao: { enabled: true, intensity: 0.8 },
-      fog: { enabled: true, color: 0x0e1016, density: 0.02 },
-      godRays: { enabled: true, samples: 64, exposure: 0.95, decay: 0.95, density: 0.9, weight: 0.6, lightPosNDC: new THREE.Vector2(0.5, 0.2) },
-      heatHaze: { enabled: true, strength: 0.0025 },
-      film: { grain: 0.035, vignette: 0.25, exposure: 1.12 },
-      cityLights: { enabled: true, count: 500, bounds: 1800 },
-      particles: { enabled: true, count: 1200, bounds: 1600 }
-    }, options);
-
-    const w = Math.max(1, Math.floor((renderer.domElement.width || window.innerWidth) * this.opts.resolutionScale));
-    const h = Math.max(1, Math.floor((renderer.domElement.height || window.innerHeight) * this.opts.resolutionScale));
-
-    this.rtScene = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType });
-    this.rtBright = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType });
-    this.rtBlurA = new THREE.WebGLRenderTarget(w >> 1, h >> 1, { type: THREE.HalfFloatType });
-    this.rtBlurB = new THREE.WebGLRenderTarget(w >> 2, h >> 2, { type: THREE.HalfFloatType });
-    this.rtBlurC = new THREE.WebGLRenderTarget(w >> 3, h >> 3, { type: THREE.HalfFloatType });
-    this.rtDepth = new THREE.WebGLRenderTarget(w, h, { type: THREE.UnsignedByteType });
-    this.rtAO = new THREE.WebGLRenderTarget(w, h, { type: THREE.UnsignedByteType });
-    this.rtGod = new THREE.WebGLRenderTarget(w, h, { type: THREE.HalfFloatType });
-
-    this.fsScene = new THREE.Scene();
-    this.fsCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
-    this.fsQuad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.MeshBasicMaterial({ color: 0x000000 }));
-    this.fsScene.add(this.fsQuad);
-
-    this._setupLights();
-    this._setupBloom();
-    this._setupSSAO();
-    this._setupFog();
-    this._setupGodRays();
-    this._setupFinalComposite();
-    this._setupCityLights();
-    this._setupParticles();
-
-    window.addEventListener('resize', () => this._resize());
-    this._resize();
-
-    this.time = 0;
-  }
-
-  _setupLights() {
-    this.ambient = new THREE.AmbientLight(0xffffff, 0.25);
-    this.sun = new THREE.DirectionalLight(0xffd166, 2.2);
-    this.sun.position.set(200, 400, 200);
-    this.sun.castShadow = true;
-    this.sun.shadow.mapSize.set(2048, 2048);
-    this.sun.shadow.camera.near = 10;
-    this.sun.shadow.camera.far = 1200;
-    this.sun.shadow.camera.left = -400;
-    this.sun.shadow.camera.right = 400;
-    this.sun.shadow.camera.top = 400;
-    this.sun.shadow.camera.bottom = -400;
-    this.scene.add(this.ambient);
-    this.scene.add(this.sun);
-  }
-
-  _setupBloom() {
-    this.brightPassMat = new THREE.ShaderMaterial({
-      uniforms: { tScene: { value: null }, threshold: { value: this.opts.bloom.threshold } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tScene; uniform float threshold;
-        void main(){
-          vec3 c = texture2D(tScene, vUv).rgb;
-          float l = dot(c, vec3(0.2126,0.7152,0.0722));
-          vec3 outc = l > threshold ? c : vec3(0.0);
-          gl_FragColor = vec4(outc, 1.0);
-        }
-      `
-    });
-
-    this.blurMat = new THREE.ShaderMaterial({
-      uniforms: { tInput: { value: null }, direction: { value: new THREE.Vector2(1.0, 0.0) }, resolution: { value: new THREE.Vector2(1, 1) }, radius: { value: this.opts.bloom.radius } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tInput; uniform vec2 direction; uniform vec2 resolution; uniform float radius;
-        void main(){
-          vec2 texel = direction / resolution;
-          vec3 sum = vec3(0.0);
-          sum += texture2D(tInput, vUv + texel * -4.0).rgb * 0.05;
-          sum += texture2D(tInput, vUv + texel * -3.0).rgb * 0.09;
-          sum += texture2D(tInput, vUv + texel * -2.0).rgb * 0.12;
-          sum += texture2D(tInput, vUv + texel * -1.0).rgb * 0.15;
-          sum += texture2D(tInput, vUv).rgb * 0.16;
-          sum += texture2D(tInput, vUv + texel * 1.0).rgb * 0.15;
-          sum += texture2D(tInput, vUv + texel * 2.0).rgb * 0.12;
-          sum += texture2D(tInput, vUv + texel * 3.0).rgb * 0.09;
-          sum += texture2D(tInput, vUv + texel * 4.0).rgb * 0.05;
-          gl_FragColor = vec4(sum, 1.0);
-        }
-      `
-    });
-
-    this.bloomCompositeMat = new THREE.ShaderMaterial({
-      uniforms: { tScene: { value: null }, tA: { value: null }, tB: { value: null }, tC: { value: null }, strength: { value: this.opts.bloom.strength } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tScene, tA, tB, tC; uniform float strength;
-        void main(){
-          vec3 base = texture2D(tScene, vUv).rgb;
-          vec3 a = texture2D(tA, vUv).rgb;
-          vec3 b = texture2D(tB, vUv).rgb;
-          vec3 c = texture2D(tC, vUv).rgb;
-          vec3 bloom = a * 0.6 + b * 0.3 + c * 0.1;
-          gl_FragColor = vec4(base + bloom * strength, 1.0);
-        }
-      `
-    });
-  }
-
-  _setupSSAO() {
-    this.depthMaterial = new THREE.MeshDepthMaterial();
-    this.depthMaterial.depthPacking = THREE.RGBADepthPacking;
-    this.depthMaterial.blending = THREE.NoBlending;
-
-    this.ssaoMat = new THREE.ShaderMaterial({
-      uniforms: { tDepth: { value: null }, resolution: { value: new THREE.Vector2(1, 1) }, intensity: { value: this.opts.ssao.intensity } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tDepth; uniform vec2 resolution; uniform float intensity;
-        float d(vec2 uv){ return texture2D(tDepth, uv).r; }
-        void main(){
-          vec2 texel = 1.0 / resolution;
-          float c = d(vUv);
-          float sum = 0.0;
-          sum += abs(c - d(vUv + texel * vec2(1,0)));
-          sum += abs(c - d(vUv + texel * vec2(-1,0)));
-          sum += abs(c - d(vUv + texel * vec2(0,1)));
-          sum += abs(c - d(vUv + texel * vec2(0,-1)));
-          sum += abs(c - d(vUv + texel * vec2(1,1)));
-          sum += abs(c - d(vUv + texel * vec2(-1,-1)));
-          sum += abs(c - d(vUv + texel * vec2(1,-1)));
-          sum += abs(c - d(vUv + texel * vec2(-1,1)));
-          float ao = clamp(sum * intensity, 0.0, 1.0);
-          gl_FragColor = vec4(vec3(ao), 1.0);
-        }
-      `
-    });
-
-    this.ssaoCompositeMat = new THREE.ShaderMaterial({
-      uniforms: { tScene: { value: null }, tAO: { value: null } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tScene, tAO;
-        void main(){
-          vec3 base = texture2D(tScene, vUv).rgb;
-          float ao = texture2D(tAO, vUv).r;
-          gl_FragColor = vec4(base * (1.0 - ao * 0.6), 1.0);
-        }
-      `
-    });
-  }
-
-  _setupFog() {
-    this.fogMat = new THREE.ShaderMaterial({
-      transparent: true, depthTest: false,
-      uniforms: { tScene: { value: null }, fogColor: { value: new THREE.Color(this.opts.fog.color) }, density: { value: this.opts.fog.density } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tScene; uniform vec3 fogColor; uniform float density;
-        void main(){
-          vec4 base = texture2D(tScene, vUv);
-          float h = vUv.y;
-          float fog = 1.0 - exp(-pow(h, 1.2) * density * 60.0);
-          vec3 col = mix(base.rgb, fogColor, clamp(fog, 0.0, 0.85));
-          gl_FragColor = vec4(col, 1.0);
-        }
-      `
-    });
-  }
-
-  _setupGodRays() {
-    this.godRayMat = new THREE.ShaderMaterial({
-      uniforms: {
-        tScene: { value: null },
-        lightPos: { value: this.opts.godRays.lightPosNDC },
-        exposure: { value: this.opts.godRays.exposure },
-        decay: { value: this.opts.godRays.decay },
-        density: { value: this.opts.godRays.density },
-        weight: { value: this.opts.godRays.weight },
-        samples: { value: this.opts.godRays.samples }
-      },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv;
-        uniform sampler2D tScene; uniform vec2 lightPos;
-        uniform float exposure, decay, density, weight; uniform int samples;
-        void main(){
-          vec2 delta = (lightPos - vUv) * density / float(samples);
-          vec3 col = vec3(0.0);
-          float illum = 1.0;
-          vec2 coord = vUv;
-          for(int i=0; i<120; i++){
-            if(i >= samples) break;
-            coord += delta;
-            vec3 sample = texture2D(tScene, coord).rgb;
-            sample *= illum * weight;
-            col += sample;
-            illum *= decay;
-          }
-          gl_FragColor = vec4(col * exposure, 1.0);
-        }
-      `
-    });
-  }
-
-  _setupFinalComposite() {
-    this.finalMat = new THREE.ShaderMaterial({
-      uniforms: {
-        tScene: { value: null }, tBloom: { value: null }, tGod: { value: null },
-        grainAmount: { value: this.opts.film.grain }, vignette: { value: this.opts.film.vignette }, exposure: { value: this.opts.film.exposure }
-      },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv;
-        uniform sampler2D tScene, tBloom, tGod;
-        uniform float grainAmount, vignette, exposure;
-        float rand(vec2 co){ return fract(sin(dot(co.xy, vec2(12.9898,78.233))) * 43758.5453); }
-        void main(){
-          vec3 base = texture2D(tScene, vUv).rgb;
-          vec3 bloom = texture2D(tBloom, vUv).rgb;
-          vec3 god = texture2D(tGod, vUv).rgb;
-          vec3 col = base + bloom + god;
-          col = 1.0 - exp(-col * exposure);
-          float d = distance(vUv, vec2(0.5));
-          col *= 1.0 - vignette * smoothstep(0.4, 0.8, d);
-          float g = rand(vUv * vec2(1920.0,1080.0)) * grainAmount;
-          col += g;
-          gl_FragColor = vec4(col, 1.0);
-        }
-      `
-    });
-  }
-
-  _setupCityLights() {
-    if(!this.opts.cityLights.enabled) return;
-    this.cityLightGroup = new THREE.Group();
-    const spriteMat = new THREE.SpriteMaterial({ color: 0xffcc88, transparent: true, opacity: 0.85 });
-    const B = this.opts.cityLights.bounds;
-    for(let i=0;i<this.opts.cityLights.count;i++){
-      const s = new THREE.Sprite(spriteMat.clone());
-      s.material.color.setHSL(0.1 + Math.random()*0.1, 0.7, 0.6 + Math.random()*0.2);
-      s.scale.setScalar(2 + Math.random()*4);
-      s.position.set((Math.random()-0.5)*B, 1 + Math.random()*2, (Math.random()-0.5)*B);
-      s.material.opacity = 0.6 + Math.random()*0.4;
-      this.cityLightGroup.add(s);
+  <audio id="bg-music" loop>
+    <source src="https://cdn.pixabay.com/audio/2022/08/02/audio_88440bc21d.mp3" type="audio/mpeg">
+  </audio>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.module.min.js",
+      "three/examples/jsm/controls/OrbitControls.js": "https://unpkg.com/three@0.160.0/examples/jsm/controls/OrbitControls.js",
+      "three/examples/jsm/postprocessing/EffectComposer.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/EffectComposer.js",
+      "three/examples/jsm/postprocessing/RenderPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/RenderPass.js",
+      "three/examples/jsm/postprocessing/UnrealBloomPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/UnrealBloomPass.js",
+      "three/examples/jsm/postprocessing/SSAOPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/SSAOPass.js",
+      "three/examples/jsm/postprocessing/FilmPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/FilmPass.js",
+      "three/examples/jsm/postprocessing/ShaderPass.js": "https://unpkg.com/three@0.160.0/examples/jsm/postprocessing/ShaderPass.js",
+      "three/examples/jsm/shaders/FXAAShader.js": "https://unpkg.com/three@0.160.0/examples/jsm/shaders/FXAAShader.js",
+      "three/examples/jsm/shaders/VignetteShader.js": "https://unpkg.com/three@0.160.0/examples/jsm/shaders/VignetteShader.js"
     }
-    this.scene.add(this.cityLightGroup);
   }
+  </script>
 
-  _setupParticles() {
-    if(!this.opts.particles.enabled) return;
-    this.particles = new THREE.Group();
-    const geo = new THREE.BufferGeometry();
-    const count = this.opts.particles.count;
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
-    const B = this.opts.particles.bounds;
-    for(let i=0;i<count;i++){
-      positions[i*3+0] = (Math.random()-0.5)*B;
-      positions[i*3+1] = Math.random()*60 + 2;
-      positions[i*3+2] = (Math.random()-0.5)*B;
-      velocities[i*3+0] = (Math.random()-0.5)*0.2;
-      velocities[i*3+1] = -Math.random()*0.05;
-      velocities[i*3+2] = (Math.random()-0.5)*0.2;
-      colors[i*3+0] = 1.0;
-      colors[i*3+1] = 0.7 + Math.random()*0.3;
-      colors[i*3+2] = 0.3 + Math.random()*0.2;
+  <script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
+  import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+  import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+  import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+  import { SSAOPass } from 'three/examples/jsm/postprocessing/SSAOPass.js';
+  import { FilmPass } from 'three/examples/jsm/postprocessing/FilmPass.js';
+  import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+  import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+  import { VignetteShader } from 'three/examples/jsm/shaders/VignetteShader.js';
+  class GraphicsEngine {
+    constructor({ renderer, scene, camera }) {
+      this.renderer = renderer;
+      this.scene = scene;
+      this.camera = camera;
+
+      // Resize handling
+      this.size = new THREE.Vector2(window.innerWidth, window.innerHeight);
+      window.addEventListener('resize', () => this.onResize());
+
+      // Composer
+      this.composer = new EffectComposer(this.renderer);
+      this.renderPass = new RenderPass(this.scene, this.camera);
+      this.composer.addPass(this.renderPass);
+
+      // FXAA (edge smoothing)
+      this.fxaaPass = new ShaderPass(FXAAShader);
+      this.fxaaPass.material.uniforms['resolution'].value.set(1 / this.size.x, 1 / this.size.y);
+      this.composer.addPass(this.fxaaPass);
+
+      // SSAO (ambient occlusion)
+      this.ssaoPass = new SSAOPass(this.scene, this.camera, this.size.x, this.size.y);
+      this.ssaoPass.kernelRadius = 16;
+      this.ssaoPass.minDistance = 0.005;
+      this.ssaoPass.maxDistance = 0.1;
+      this.composer.addPass(this.ssaoPass);
+
+      // Bloom (cinematic glow)
+      const bloomStrength = 0.8, bloomRadius = 0.2, bloomThreshold = 0.6;
+      this.bloomPass = new UnrealBloomPass(new THREE.Vector2(this.size.x, this.size.y), bloomStrength, bloomRadius, bloomThreshold);
+      this.composer.addPass(this.bloomPass);
+
+      // Vignette (subtle focus)
+      this.vignettePass = new ShaderPass(VignetteShader);
+      this.vignettePass.uniforms['offset'].value = 1.0;
+      this.vignettePass.uniforms['darkness'].value = 1.2;
+      this.composer.addPass(this.vignettePass);
+
+      // Film grain (texture)
+      this.filmPass = new FilmPass(0.35, 0.025, 648, false);
+      this.composer.addPass(this.filmPass);
+
+      // Scene fog for depth
+      this.scene.fog = new THREE.FogExp2(0x8fbcd4, 0.00008);
+
+      // Night city lights (emissive points)
+      this.cityLights = new THREE.Group();
+      this.scene.add(this.cityLights);
+
+      // Heat shimmer particles (subtle)
+      const particleGeo = new THREE.BufferGeometry();
+      const particleCount = 800;
+      const positions = new Float32Array(particleCount * 3);
+      for (let i = 0; i < particleCount; i++) {
+        positions[i*3] = (Math.random() - 0.5) * 3000;
+        positions[i*3+1] = 50 + Math.random() * 150;
+        positions[i*3+2] = (Math.random() - 0.5) * 3000;
+      }
+      particleGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+      const particleMat = new THREE.PointsMaterial({ color: 0xffddaa, size: 6, sizeAttenuation: true, transparent: true, opacity: 0.15 });
+      this.particles = new THREE.Points(particleGeo, particleMat);
+      this.scene.add(this.particles);
     }
-    geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
-    const mat = new THREE.PointsMaterial({ size: 2.5, vertexColors: true, transparent: true, opacity: 0.85, depthWrite: false, blending: THREE.AdditiveBlending });
-    const points = new THREE.Points(geo, mat);
-    this.particles.add(points);
-    this.scene.add(this.particles);
-    this.particleData = { positions, velocities, count };
+
+    addCityLight(x, y, z) {
+      const bulb = new THREE.Mesh(
+        new THREE.SphereGeometry(2, 8, 8),
+        new THREE.MeshBasicMaterial({ color: 0xffd27a })
+      );
+      bulb.position.set(x, y, z);
+      this.cityLights.add(bulb);
+    }
+
+    onResize() {
+      this.size.set(window.innerWidth, window.innerHeight);
+      this.renderer.setSize(this.size.x, this.size.y);
+      this.composer.setSize(this.size.x, this.size.y);
+      this.fxaaPass.material.uniforms['resolution'].value.set(1 / this.size.x, 1 / this.size.y);
+      this.bloomPass.setSize(this.size.x, this.size.y);
+    }
+
+    render(dt) {
+      // Animate particles gently
+      const pos = this.particles.geometry.attributes.position;
+      for (let i = 0; i < pos.count; i++) {
+        const y = pos.getY(i);
+        pos.setY(i, y + Math.sin((i + performance.now() * 0.0005)) * 0.05);
+      }
+      pos.needsUpdate = true;
+
+      // Render pipeline
+      this.composer.render();
+    }
+  }
+  let scene, camera, renderer, controls, cityBody, palaceGroup, raycaster, mouse, gfx, clock;
+  const mosques = [];
+  const gates = [];
+  const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of"];
+  const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe"];
+  const narratives = ["Features high mud-brick walls and a deep wind-tower.", "The courtyard contains a rare mechanical fountain.", "The roof is used for celestial observations."];
+  const mosqueNames = ["The Great Mosque of Al-Mansur", "Friday Mosque", "The Turquoise Sanctuary", "The Al-Khulafa Mosque", "Oratory of the Scholars"];
+  const mosqueLore = ["The muezzin's call echoes from the minaret.", "A center for theological debate.", "Paved with cool marble.", "The dome is clad in green glazed tiles.", "Scholars rest here after study."];
+
+  window.nextSlide = function() {
+    const current = document.querySelector('.intro-slide.active');
+    const next = current?.nextElementSibling;
+    if (next && next.classList.contains('intro-slide')) {
+      current.classList.remove('active');
+      next.classList.add('active');
+    }
+  };
+
+  window.startApp = function() {
+    document.getElementById('bg-music').play().catch(() => {});
+    document.getElementById('boot-sequence').style.opacity = '0';
+    setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1000);
+  };
+
+  function init() {
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x87CEEB);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
+    camera.position.set(2200, 1500, 2200);
+    renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+    controls = new OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    raycaster = new THREE.Raycaster();
+    mouse = new THREE.Vector2();
+
+    const sun = new THREE.DirectionalLight(0xffffff, 2);
+    sun.position.set(500, 1000, 500);
+    scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
+
+    createCity();
+
+    window.addEventListener('click', onClick);
+    document.getElementById('close-card').onclick = () => { document.getElementById('building-card').style.display = 'none'; };
+
+    clock = new THREE.Clock();
+    gfx = new GraphicsEngine({ renderer, scene, camera });
+    animate();
   }
 
-  _resize() {
-    const w = this.renderer.domElement.width || window.innerWidth;
-    const h = this.renderer.domElement.height || window.innerHeight;
-    const W = Math.max(1, Math.floor(w * this.opts.resolutionScale));
-    const H = Math.max(1, Math.floor(h * this.opts.resolutionScale));
+  function createCity() {
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
+    floor.rotation.x = -Math.PI / 2;
+    scene.add(floor);
 
-    [this.rtScene, this.rtBright, this.rtDepth, this.rtAO, this.rtGod].forEach(rt => rt.setSize(W, H));
-    this.rtBlurA.setSize(W >> 1, H >> 1);
-    this.rtBlurB.setSize(W >> 2, H >> 2);
-    this.rtBlurC.setSize(W >> 3, H >> 3);
+    const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
+    const wallMat = new THREE.MeshStandardMaterial({ color: 0x6b5335 });
 
-    this.blurMat.uniforms.resolution.value.set(W, H);
-    this.ssaoMat.uniforms.resolution.value.set(W, H);
-  }
+    // Circular Walls
+    const createWall = (radius, height, width) => {
+      const wall = new THREE.Mesh(new THREE.TorusGeometry(radius, width, 16, 100), wallMat);
+      wall.rotation.x = Math.PI / 2;
+      wall.position.y = height / 2;
+      scene.add(wall);
+    };
+    createWall(1500, 60, 20); 
+    createWall(600, 80, 15);
 
-  _updateParticles(dt) {
-    if(!this.particleData) return;
-    const { positions, velocities, count } = this.particleData;
-    for(let i=0;i<count;i++){
-      const ix = i*3;
-      positions[ix+0] += velocities[ix+0];
-      positions[ix+1] += velocities[ix+1];
-      positions[ix+2] += velocities[ix+2];
-      if(positions[ix+1] < 0.5){
-        positions[ix+0] = (Math.random()-0.5)*this.opts.particles.bounds;
-        positions[ix+1] = Math.random()*60 + 2;
-        positions[ix+2] = (Math.random()-0.5)*this.opts.particles.bounds;
+    // Mosques
+    const mosquePositions = [];
+    for (let i = 0; i < 5; i++) {
+      const r = 750 + Math.random() * 400;
+      const a = (i / 5) * Math.PI * 2;
+      const x = Math.cos(a) * r;
+      const z = Math.sin(a) * r;
+      const mosqueGroup = new THREE.Group();
+      const mBase = new THREE.Mesh(new THREE.BoxGeometry(45, 35, 45), cityMat);
+      const mDome = new THREE.Mesh(new THREE.SphereGeometry(20, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
+      mDome.position.y = 17;
+      const minaret = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 70), cityMat);
+      minaret.position.set(18, 25, 18);
+      mosqueGroup.add(mBase, mDome, minaret);
+      mosqueGroup.position.set(x, 0, z);
+      mosqueGroup.userData = { title: mosqueNames[i], desc: mosqueLore[i] };
+      scene.add(mosqueGroup);
+      mosques.push(mosqueGroup);
+      mosquePositions.push({x, z, radius: 90});
+    }
+
+    // Gates
+    const gateNames = ["Kufa Gate", "Basra Gate", "Khurasan Gate", "Syrian Gate"];
+    const gateAngles = [Math.PI / 2, 0, Math.PI, -Math.PI / 2];
+    gateAngles.forEach((angle, i) => {
+      const x = Math.cos(angle) * 1500;
+      const z = Math.sin(angle) * 1500;
+      const gateMesh = new THREE.Mesh(new THREE.BoxGeometry(80, 120, 80), wallMat);
+      gateMesh.position.set(x, 60, z);
+      gateMesh.userData = { title: gateNames[i], desc: "One of the four grand entrances to the Round City." };
+      scene.add(gateMesh);
+      gates.push(gateMesh);
+      // Add a light near each gate for night ambiance
+      gfx?.addCityLight(x, 20, z);
+    });
+
+    // Residential Districts
+    cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
+    const dummy = new THREE.Object3D();
+    let count = 0;
+    for (let i = 0; i < 4000; i++) {
+      const r = 680 + Math.random() * 750;
+      const a = Math.random() * Math.PI * 2;
+      if (Math.abs(a % (Math.PI / 2)) < 0.15) continue; // Gate roads
+      const x = Math.cos(a) * r;
+      const z = Math.sin(a) * r;
+      let overlap = mosquePositions.some(p => Math.sqrt((x-p.x)**2 + (z-p.z)**2) < p.radius);
+      if (!overlap && count < 4000) {
+        const h = 20 + Math.random() * 40;
+        const w = 15 + Math.random() * 15;
+        dummy.position.set(x, h/2, z);
+        dummy.rotation.y = -a;
+        dummy.scale.set(w, h, w);
+        dummy.updateMatrix();
+        cityBody.setMatrixAt(count, dummy.matrix);
+        const s = 0.7 + Math.random() * 0.3;
+        cityBody.setColorAt(count, new THREE.Color(s, s * 0.9, s * 0.8));
+        count++;
+        // occasional city light
+        if (Math.random() < 0.02) gfx?.addCityLight(x, 8, z);
       }
     }
-    this.particles.children[0].geometry.attributes.position.needsUpdate = true;
+    scene.add(cityBody);
+
+    // Palace
+    palaceGroup = new THREE.Group();
+    const pBase = new THREE.Mesh(new THREE.CylinderGeometry(120, 120, 90, 32), new THREE.MeshStandardMaterial({color: 0x9c8263}));
+    const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
+    pDome.position.y = 45;
+    palaceGroup.add(pBase, pDome);
+    scene.add(palaceGroup);
+  }
+  function updateScale() {
+    const ratio = Math.round(camera.position.distanceTo(controls.target) / 2);
+    document.getElementById('scale-label').innerText = `1:${ratio}`;
   }
 
-  _blit(material, targetRT) {
-    this.fsQuad.material = material;
-    this.renderer.setRenderTarget(targetRT);
-    this.renderer.clear();
-    this.renderer.render(this.fsScene, this.fsCam);
-  }
+  function onClick(event) {
+    mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    raycaster.setFromCamera(mouse, camera);
 
-  _applyHeatHaze(rtScene, strength, time) {
-    const mat = new THREE.ShaderMaterial({
-      uniforms: { tScene: { value: rtScene.texture }, time: { value: time }, strength: { value: strength } },
-      vertexShader: `varying vec2 vUv; void main(){ vUv=uv; gl_Position=vec4(position,1.0); }`,
-      fragmentShader: `
-        varying vec2 vUv; uniform sampler2D tScene; uniform float time; uniform float strength;
-        void main(){
-          float wave = sin(vUv.y * 40.0 + time * 1.5) * strength;
-          vec2 uv = vUv + vec2(wave, 0.0);
-          gl_FragColor = texture2D(tScene, uv);
+    const check = (arr) => {
+      for (let obj of arr) {
+        if (raycaster.intersectObject(obj, true).length > 0) {
+          showCard(obj.userData.title, obj.userData.desc);
+          return true;
         }
-      `
-    });
-    this._blit(mat, rtScene);
-    mat.dispose();
-  }
-
-  render(dt = 0.016) {
-    this.time += dt;
-
-    this.renderer.setRenderTarget(this.rtScene);
-    this.renderer.clear();
-    this.renderer.render(this.scene, this.camera);
-
-    if(this.opts.ssao.enabled){
-      const override = this.scene.overrideMaterial;
-      this.scene.overrideMaterial = this.depthMaterial;
-      this.renderer.setRenderTarget(this.rtDepth);
-      this.renderer.clear();
-      this.renderer.render(this.scene, this.camera);
-      this.scene.overrideMaterial = override;
-
-      this.ssaoMat.uniforms.tDepth.value = this.rtDepth.texture;
-      this.ssaoMat.uniforms.resolution.value.set(this.rtDepth.width, this.rtDepth.height);
-      this._blit(this.ssaoMat, this.rtAO);
-
-      this.ssaoCompositeMat.uniforms.tScene.value = this.rtScene.texture;
-      this.ssaoCompositeMat.uniforms.tAO.value = this.rtAO.texture;
-      this._blit(this.ssaoCompositeMat, this.rtScene);
-    }
-
-    this.brightPassMat.uniforms.tScene.value = this.rtScene.texture;
-    this.brightPassMat.uniforms.threshold.value = this.opts.bloom.threshold;
-    this._blit(this.brightPassMat, this.rtBright);
-
-    this.blurMat.uniforms.tInput.value = this.rtBright.texture;
-    this.blurMat.uniforms.direction.value.set(1.0, 0.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBright.width, this.rtBright.height);
-    this._blit(this.blurMat, this.rtBlurA);
-    this.blurMat.uniforms.tInput.value = this.rtBlurA.texture;
-    this.blurMat.uniforms.direction.value.set(0.0, 1.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBlurA.width, this.rtBlurA.height);
-    this._blit(this.blurMat, this.rtBlurA);
-
-    this.blurMat.uniforms.tInput.value = this.rtBlurA.texture;
-    this.blurMat.uniforms.direction.value.set(1.0, 0.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBlurA.width, this.rtBlurA.height);
-    this._blit(this.blurMat, this.rtBlurB);
-    this.blurMat.uniforms.tInput.value = this.rtBlurB.texture;
-    this.blurMat.uniforms.direction.value.set(0.0, 1.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBlurB.width, this.rtBlurB.height);
-    this._blit(this.blurMat, this.rtBlurB);
-
-    this.blurMat.uniforms.tInput.value = this.rtBlurB.texture;
-    this.blurMat.uniforms.direction.value.set(1.0, 0.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBlurB.width, this.rtBlurB.height);
-    this._blit(this.blurMat, this.rtBlurC);
-    this.blurMat.uniforms.tInput.value = this.rtBlurC.texture;
-    this.blurMat.uniforms.direction.value.set(0.0, 1.0);
-    this.blurMat.uniforms.resolution.value.set(this.rtBlurC.width, this.rtBlurC.height);
-    this._blit(this.blurMat, this.rtBlurC);
-
-    this.bloomCompositeMat.uniforms.tScene.value = this.rtScene.texture;
-    this.bloomCompositeMat.uniforms.tA.value = this.rtBlurA.texture;
-    this.bloomCompositeMat.uniforms.tB.value = this.rtBlurB.texture;
-    this.bloomCompositeMat.uniforms.tC.value = this.rtBlurC.texture;
-    this.bloomCompositeMat.uniforms.strength.value = this.opts.bloom.strength;
-    this._blit(this.bloomCompositeMat, this.rtScene);
-
-    if(this.opts.godRays.enabled){
-      this.godRayMat.uniforms.tScene.value = this.rtScene.texture;
-      this._blit(this.godRayMat, this.rtGod);
-    } else {
-      this.renderer.setRenderTarget(this.rtGod);
-      this.renderer.clear();
-      this.renderer.setRenderTarget(null);
-    }
-
-    if(this.opts.fog.enabled){
-      this.fogMat.uniforms.tScene.value = this.rtScene.texture;
-      this._blit(this.fogMat, this.rtScene);
-    }
-
-    if(this.opts.heatHaze.enabled){
-      this._applyHeatHaze(this.rtScene, this.opts.heatHaze.strength, this.time);
-    }
-
-    this._updateParticles(dt);
-
-    this.finalMat.uniforms.tScene.value = this.rtScene.texture;
-    this.finalMat.uniforms.tBloom.value = this.rtBlurA.texture;
-    this.finalMat.uniforms.tGod.value = this.rtGod.texture;
-    this.finalMat.uniforms.exposure.value = this.opts.film.exposure;
-    this.finalMat.uniforms.grainAmount.value = this.opts.film.grain;
-    this.finalMat.uniforms.vignette.value = this.opts.film.vignette;
-
-    this.renderer.setRenderTarget(null);
-    this._blit(this.finalMat, null);
-  }
-}
-
-/* ===== Your original app code (unchanged logic) ===== */
-let scene, camera, renderer, controls, cityBody, palaceGroup, raycaster, mouse, gfx, clock;
-const mosques = [];
-const gates = [];
-const prefixes = ["The Ancestral Home of", "The Workshop of", "The Estate of", "The Hidden Laboratory of"];
-const owners = ["a Silk Road Navigator", "an Abbasid Tax Collector", "a Master Astrolabe Maker", "a Royal Scribe"];
-const narratives = ["Features high mud-brick walls and a deep wind-tower.", "The courtyard contains a rare mechanical fountain.", "The roof is used for celestial observations."];
-const mosqueNames = ["The Great Mosque of Al-Mansur", "Friday Mosque", "The Turquoise Sanctuary", "The Al-Khulafa Mosque", "Oratory of the Scholars"];
-const mosqueLore = ["The muezzin's call echoes from the minaret.", "A center for theological debate.", "Paved with cool marble.", "The dome is clad in green glazed tiles.", "Scholars rest here after study."];
-
-window.nextSlide = function() {
-  const current = document.querySelector('.intro-slide.active');
-  const next = current?.nextElementSibling;
-  if (next && next.classList.contains('intro-slide')) {
-    current.classList.remove('active');
-    next.classList.add('active');
-  }
-};
-
-window.startApp = function() {
-  document.getElementById('bg-music').play().catch(() => {});
-  document.getElementById('boot-sequence').style.opacity = '0';
-  setTimeout(() => { document.getElementById('boot-sequence').remove(); init(); }, 1000);
-};
-
-function init() {
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x87CEEB);
-  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 30000);
-  camera.position.set(2200, 1500, 2200);
-  renderer = new THREE.WebGLRenderer({ antialias: true, logarithmicDepthBuffer: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  document.body.appendChild(renderer.domElement);
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  raycaster = new THREE.Raycaster();
-  mouse = new THREE.Vector2();
-  const sun = new THREE.DirectionalLight(0xffffff, 2);
-  sun.position.set(500, 1000, 500);
-  scene.add(sun, new THREE.AmbientLight(0xffffff, 0.7));
-  createCity();
-  window.addEventListener('click', onClick);
-  document.getElementById('close-card').onclick = () => { document.getElementById('building-card').style.display = 'none'; };
-  clock = new THREE.Clock();
-  gfx = new GraphicsEngine({ renderer, scene, camera });
-  animate();
-}
-<script type="module">
-/* continuation of your original code */
-
-function createCity() {
-  const floor = new THREE.Mesh(new THREE.PlaneGeometry(12000, 12000), new THREE.MeshStandardMaterial({ color: 0xbfa37a }));
-  floor.rotation.x = -Math.PI / 2;
-  scene.add(floor);
-  const cityMat = new THREE.MeshStandardMaterial({ color: 0x8b7355 });
-  const wallMat = new THREE.MeshStandardMaterial({ color: 0x6b5335 });
-
-  const createWall = (radius, height, width) => {
-    const wall = new THREE.Mesh(new THREE.TorusGeometry(radius, width, 16, 100), wallMat);
-    wall.rotation.x = Math.PI / 2;
-    wall.position.y = height / 2;
-    scene.add(wall);
-  };
-  createWall(1500, 60, 20); 
-  createWall(600, 80, 15);
-
-  const mosquePositions = [];
-  for (let i = 0; i < 5; i++) {
-    const r = 750 + Math.random() * 400;
-    const a = (i / 5) * Math.PI * 2;
-    const x = Math.cos(a) * r;
-    const z = Math.sin(a) * r;
-    const mosqueGroup = new THREE.Group();
-    const mBase = new THREE.Mesh(new THREE.BoxGeometry(45, 35, 45), cityMat);
-    const mDome = new THREE.Mesh(new THREE.SphereGeometry(20, 16, 8, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27}));
-    mDome.position.y = 17;
-    const minaret = new THREE.Mesh(new THREE.CylinderGeometry(6, 6, 70), cityMat);
-    minaret.position.set(18, 25, 18);
-    mosqueGroup.add(mBase, mDome, minaret);
-    mosqueGroup.position.set(x, 0, z);
-    mosqueGroup.userData = { title: mosqueNames[i], desc: mosqueLore[i] };
-    scene.add(mosqueGroup);
-    mosques.push(mosqueGroup);
-    mosquePositions.push({x, z, radius: 90});
-  }
-
-  const gateNames = ["Kufa Gate", "Basra Gate", "Khurasan Gate", "Syrian Gate"];
-  const gateAngles = [Math.PI / 2, 0, Math.PI, -Math.PI / 2];
-  gateAngles.forEach((angle, i) => {
-    const x = Math.cos(angle) * 1500;
-    const z = Math.sin(angle) * 1500;
-    const gateMesh = new THREE.Mesh(new THREE.BoxGeometry(80, 120, 80), wallMat);
-    gateMesh.position.set(x, 60, z);
-    gateMesh.userData = { title: gateNames[i], desc: "One of the four grand entrances to the Round City." };
-    scene.add(gateMesh);
-    gates.push(gateMesh);
-  });
-
-  cityBody = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), cityMat, 4000);
-  const dummy = new THREE.Object3D();
-  let count = 0;
-  for (let i = 0; i < 4000; i++) {
-    const r = 680 + Math.random() * 750;
-    const a = Math.random() * Math.PI * 2;
-    if (Math.abs(a % (Math.PI / 2)) < 0.15) continue;
-    const x = Math.cos(a) * r;
-    const z = Math.sin(a) * r;
-    let overlap = mosquePositions.some(p => Math.sqrt((x-p.x)**2 + (z-p.z)**2) < p.radius);
-    if (!overlap && count < 4000) {
-      const h = 20 + Math.random() * 40;
-      const w = 15 + Math.random() * 15;
-      dummy.position.set(x, h/2, z);
-      dummy.rotation.y = -a;
-      dummy.scale.set(w, h, w);
-      dummy.updateMatrix();
-      cityBody.setMatrixAt(count, dummy.matrix);
-      const s = 0.7 + Math.random() * 0.3;
-      cityBody.setColorAt(count, new THREE.Color(s, s * 0.9, s * 0.8));
-      count++;
-    }
-  }
-  scene.add(cityBody);
-
-  palaceGroup = new THREE.Group();
-  const pBase = new THREE.Mesh(new THREE.CylinderGeometry(120, 120, 90, 32), new THREE.MeshStandardMaterial({color: 0x9c8263}));
-  const pDome = new THREE.Mesh(new THREE.SphereGeometry(80, 32, 16, 0, 6.3, 0, 1.6), new THREE.MeshStandardMaterial({color: 0x2d5a27})); 
-  pDome.position.y = 45;
-  palaceGroup.add(pBase, pDome);
-  scene.add(palaceGroup);
-}
-
-function updateScale() {
-  const ratio = Math.round(camera.position.distanceTo(controls.target) / 2);
-  document.getElementById('scale-label').innerText = `1:${ratio}`;
-}
-
-function onClick(event) {
-  mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-  mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-  raycaster.setFromCamera(mouse, camera);
-  const check = (arr) => {
-    for (let obj of arr) {
-      if (raycaster.intersectObject(obj, true).length > 0) {
-        showCard(obj.userData.title, obj.userData.desc);
-        return true;
       }
+      return false;
+    };
+
+    if (raycaster.intersectObject(palaceGroup, true).length > 0) {
+      return showCard("The House of Wisdom", "The scientific heart of the city.");
     }
-    return false;
-  };
-  if (raycaster.intersectObject(palaceGroup, true).length > 0) return showCard("The House of Wisdom", "The scientific heart of the city.");
-  if (check(mosques) || check(gates)) return;
-  const hits = raycaster.intersectObject(cityBody);
-  if (hits.length > 0) {
-    const id = hits[0].instanceId;
-    showCard(prefixes[id % 4] + " " + owners[id % 4], narratives[id % 3]);
+    if (check(mosques) || check(gates)) return;
+
+    const hits = raycaster.intersectObject(cityBody);
+    if (hits.length > 0) {
+      const id = hits[0].instanceId;
+      showCard(prefixes[id % 4] + " " + owners[id % 4], narratives[id % 3]);
+    }
   }
-}
 
-function showCard(title, text) {
-  document.getElementById('card-title').innerText = title;
-  document.getElementById('card-desc').innerText = text;
-  document.getElementById('building-card').style.display = 'block';
-}
+  function showCard(title, text) {
+    document.getElementById('card-title').innerText = title;
+    document.getElementById('card-desc').innerText = text;
+    document.getElementById('building-card').style.display = 'block';
+  }
 
-function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  updateScale();
-  const dt = clock.getDelta();
-  gfx.render(dt);
-}
-</script>
-</body>
-</html>
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    updateScale();
+    const dt = clock.getDelta();
+    gfx.render(dt);
+  }
+ </script>
+ </body>
+ </html>
